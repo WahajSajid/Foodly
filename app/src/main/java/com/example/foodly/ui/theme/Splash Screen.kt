@@ -3,9 +3,17 @@
 package com.example.foodly.ui.theme
 
 import android.window.SplashScreen
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -15,6 +23,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.foodly.R
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.delay
 
 
 @Composable
@@ -51,17 +64,44 @@ fun SplashScreen() {
                 contentDescription = "",
                 modifier = Modifier.size(100.dp)
             )
-            Text(
-                "Foodly.",
-                fontWeight = FontWeight.Bold,
-                style = TextStyle(
-                    fontSize = 45.sp,
-                    color = Color(appThemeColor2.toArgb()),
-                    fontFamily = FontFamily.Cursive
+            //Creating an animation for the text
+            val text = "Foodly."
+            val displayedText = remember { mutableStateOf("") }
+
+            //Launching an effect to start the animation
+            LaunchedEffect(Unit) {
+                for (char in text) {
+                    displayedText.value += char
+                    delay(150)
+                }
+            }
+
+            AnimatedVisibility(
+                visible = displayedText.value.isNotEmpty(),
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                AppNameHeading(
+                    displayedText.value,
+                    textStyle = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 45.sp,
+                        color = Color(appThemeColor2.toArgb()),
+                        fontFamily = FontFamily.Cursive
+                    )
                 )
-            )
+            }
         }
     }
+}
+
+
+@Composable
+fun AppNameHeading(appNameDisplayed: String = "", textStyle: TextStyle = TextStyle()) {
+    Text(
+        text = appNameDisplayed,
+        style = textStyle
+    )
 }
 
 @Preview(showSystemUi = true)
