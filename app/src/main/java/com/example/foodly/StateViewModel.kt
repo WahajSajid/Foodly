@@ -8,4 +8,10 @@ class StateViewModel:ViewModel() {
     private val _showSplash = mutableStateOf(true)
     var showSplash = _showSplash
 
+    private val _showWelcomeScreen = mutableStateOf(false)
+    var showWelcomeScreen = _showWelcomeScreen
+
+    //Welcome Screen States
+    private val _showOnBoardingScreen = mutableStateOf(false)
+    var showOnBoardingScreen = _showOnBoardingScreen
 }

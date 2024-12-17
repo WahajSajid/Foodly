@@ -2,6 +2,10 @@
 
 package com.example.foodly
 
+import androidx.compose.animation.Animatable
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +21,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,9 +37,10 @@ import androidx.compose.ui.unit.sp
 import com.example.foodly.ui.theme.appThemeColor1
 import com.example.foodly.ui.theme.appThemeColor2
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.coroutineScope
 
 @Composable
-fun WelcomeScreen() {
+fun WelcomeScreen(stateViewModel: StateViewModel) {
     val systemUiController = rememberSystemUiController()
     systemUiController.setStatusBarColor(color = Color(appThemeColor2.toArgb()), darkIcons = true)
     Column(
@@ -69,8 +75,9 @@ fun WelcomeScreen() {
             text = "Go ahead, and explore more. ",
             style = TextStyle(color = Color.White)
         )
+        //LogIn Button
         ElevatedButton(
-            onClick = {},
+            onClick = { stateViewModel.showOnBoardingScreen.value = true },
             modifier = Modifier
                 .width(170.dp)
                 .padding(top = 50.dp),
@@ -81,6 +88,13 @@ fun WelcomeScreen() {
                 style = TextStyle(color = Color(appThemeColor2.toArgb()), fontSize = 20.sp)
             )
         }
+        if (stateViewModel.showOnBoardingScreen.value) {
+            stateViewModel.showWelcomeScreen.value = !stateViewModel.showWelcomeScreen.value
+            AnimatedVisibility(visible = true, enter = expandIn()) {
+                OnBoardingScreen()
+            }
+        }
+        //SignUp Button
         ElevatedButton(
             onClick = {},
             modifier = Modifier
@@ -99,5 +113,5 @@ fun WelcomeScreen() {
 @Preview(showSystemUi = true)
 @Composable
 private fun Preview() {
-    WelcomeScreen()
+    WelcomeScreen(StateViewModel())
 }

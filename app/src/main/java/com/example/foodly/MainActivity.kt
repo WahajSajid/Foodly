@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
                     SplashScreen()
                 }
                 AnimatedVisibility(visible = !stateViewModel.showSplash.value, enter = slideInHorizontally()) {
-                    WelcomeScreen()
+                        WelcomeScreen(stateViewModel)
                 }
             }
         }
