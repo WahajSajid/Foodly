@@ -1,7 +1,9 @@
-@file:Suppress("DEPRECATION")
+@file:Suppress("DEPRECATION", "UNUSED_EXPRESSION")
 
 package com.example.foodly
 
+import android.content.Context
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandIn
@@ -26,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -34,15 +37,29 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.foodly.ui.theme.appThemeColor1
 import com.example.foodly.ui.theme.appThemeColor2
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.coroutineScope
 
 @Composable
-fun WelcomeScreen(stateViewModel: StateViewModel) {
+fun WelcomeScreen(
+    onSignIn: () -> Unit = {},
+    onSignUp: () -> Unit = {},
+    stateViewModel: StateViewModel = StateViewModel(),
+    context: Context = LocalContext.current,
+    navController: NavController = NavController(LocalContext.current)
+) {
+
     val systemUiController = rememberSystemUiController()
-    systemUiController.setStatusBarColor(color = Color(appThemeColor2.toArgb()), darkIcons = true)
+    LaunchedEffect(Unit) {
+        systemUiController.setStatusBarColor(
+            color = Color(appThemeColor1.toArgb()),
+            darkIcons = true
+        )
+        systemUiController.setStatusBarColor(color = Color(appThemeColor2.toArgb()), darkIcons = true)
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -77,7 +94,7 @@ fun WelcomeScreen(stateViewModel: StateViewModel) {
         )
         //LogIn Button
         ElevatedButton(
-            onClick = { stateViewModel.showOnBoardingScreen.value = true },
+            onClick = onSignIn,
             modifier = Modifier
                 .width(170.dp)
                 .padding(top = 50.dp),
@@ -88,15 +105,9 @@ fun WelcomeScreen(stateViewModel: StateViewModel) {
                 style = TextStyle(color = Color(appThemeColor2.toArgb()), fontSize = 20.sp)
             )
         }
-        if (stateViewModel.showOnBoardingScreen.value) {
-            stateViewModel.showWelcomeScreen.value = !stateViewModel.showWelcomeScreen.value
-            AnimatedVisibility(visible = true, enter = expandIn()) {
-                OnBoardingScreen()
-            }
-        }
         //SignUp Button
         ElevatedButton(
-            onClick = {},
+            onClick = onSignUp,
             modifier = Modifier
                 .width(170.dp)
                 .padding(top = 5.dp),
@@ -113,5 +124,5 @@ fun WelcomeScreen(stateViewModel: StateViewModel) {
 @Preview(showSystemUi = true)
 @Composable
 private fun Preview() {
-    WelcomeScreen(StateViewModel())
+    WelcomeScreen(onSignUp = {}, onSignIn = {}, stateViewModel = StateViewModel())
 }
