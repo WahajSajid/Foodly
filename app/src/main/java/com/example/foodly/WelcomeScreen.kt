@@ -1,13 +1,8 @@
-@file:Suppress("DEPRECATION", "UNUSED_EXPRESSION")
+@file:Suppress("DEPRECATION")
 
 package com.example.foodly
 
 import android.content.Context
-import androidx.activity.compose.BackHandler
-import androidx.compose.animation.Animatable
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandIn
-import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -41,7 +36,6 @@ import androidx.navigation.NavController
 import com.example.foodly.ui.theme.appThemeColor1
 import com.example.foodly.ui.theme.appThemeColor2
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import kotlinx.coroutines.coroutineScope
 
 @Composable
 fun WelcomeScreen(
