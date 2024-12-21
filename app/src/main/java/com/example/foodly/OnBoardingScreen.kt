@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -63,7 +64,6 @@ fun OnBoardingScreen(
     navController: NavController = NavController(context)
 ) {
     val systemUiController = rememberSystemUiController()
-    val screenProgress = rememberSaveable { mutableStateOf(0) }
     LaunchedEffect(Unit) {
         systemUiController.setStatusBarColor(
             color = Color(appThemeColor1.toArgb()),
@@ -121,13 +121,17 @@ fun OnBoardingScreen(
         //Implementing horizontal pager
         val pagerState = rememberPagerState(pageCount = { 3 })
         Box {
-            HorizontalPager(state = pagerState) { page ->
+            HorizontalPager(state = pagerState, modifier = Modifier.fillMaxHeight()) { page ->
                 //On Boarding Screen Image
-                Column (verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start ,modifier = Modifier.fillMaxSize()){
+                Column(
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier.fillMaxSize()
+                ) {
                     Image(
                         painter = painterResource(onBoardingImages.value[page]),
                         contentDescription = "On Boarding Image",
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
             }
@@ -171,11 +175,8 @@ fun OnBoardingScreen(
                     ) {
                         //On Boarding Screen Icon
                         Image(
-                            painter = if (screenProgress.value < 3) {
-                                painterResource(onBoardingIcons.value[screenProgress.value])
-                            } else {
-                                painterResource(onBoardingIcons.value[2])
-                            },
+                            painter =
+                            painterResource(onBoardingIcons.value[pagerState.currentPage]),
                             contentDescription = "Icon",
                             modifier = Modifier
                                 .size(60.dp)
@@ -183,11 +184,8 @@ fun OnBoardingScreen(
                         )
                         //On Boarding Screen Heading
                         Text(
-                            text = if (screenProgress.value < 3) {
-                                onBoardingHeadings.value[screenProgress.value]
-                            } else {
-                                onBoardingHeadings.value[2]
-                            },
+                            text =
+                            onBoardingHeadings.value[pagerState.currentPage],
                             style = TextStyle(
                                 fontSize = 25.sp, fontWeight = FontWeight.W900, color = Color(
                                     appThemeColor2.toArgb()
@@ -195,12 +193,10 @@ fun OnBoardingScreen(
                             ),
                             modifier = Modifier.padding(top = 18.dp)
                         )
+                        //OnBoarding Screen slogan
                         Text(
-                            text = if (screenProgress.value < 3) {
-                                onBoardingSlogans.value[screenProgress.value]
-                            } else {
-                                onBoardingSlogans.value[screenProgress.value]
-                            },
+                            text =
+                            onBoardingSlogans.value[pagerState.currentPage],
                             modifier = Modifier.padding(top = 15.dp)
                         )
                         Row(modifier = Modifier.padding(top = 15.dp)) {
@@ -209,7 +205,7 @@ fun OnBoardingScreen(
                                     modifier = Modifier
                                         .padding(end = 3.dp)
                                         .background(
-                                            color = if (i == screenProgress.value) {
+                                            color = if (i == pagerState.currentPage) {
                                                 Color(rememberSaveable { appThemeColor2.toArgb() })
                                             } else {
                                                 Color(rememberSaveable { dim_appThemeColor2.toArgb() })
@@ -220,22 +216,14 @@ fun OnBoardingScreen(
                                 )
                             }
                         }
+//                        Toast.makeText(context,screenProgress.value,Toast.LENGTH_SHORT).show()
                         val coroutineScope = rememberCoroutineScope()
                         ElevatedButton(
                             onClick = {
-                                screenProgress.value++
                                 val nextPage =
                                     (pagerState.currentPage + 1).coerceAtMost(pagerState.pageCount - 1)
                                 coroutineScope.launch {
                                     pagerState.animateScrollToPage(nextPage)
-                                }
-                                if (screenProgress.value > 2) {
-                                    screenProgress.value--
-                                    Toast.makeText(
-                                        context,
-                                        "You have reached maximum",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
                                 }
                             },
                             modifier = Modifier
