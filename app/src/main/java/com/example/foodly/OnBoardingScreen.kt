@@ -3,6 +3,7 @@
 package com.example.foodly
 
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -52,11 +53,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 
 @Composable
-fun OnBoardingScreen(
-    stateViewModel: StateViewModel = StateViewModel(),
-    context: Context = LocalContext.current,
-    navController: NavController = NavController(context)
-) {
+fun OnBoardingScreen(onSkip: () -> Unit = {}, onNext: () -> Unit = {}) {
     val systemUiController = rememberSystemUiController()
     LaunchedEffect(Unit) {
         systemUiController.setStatusBarColor(
@@ -136,7 +133,7 @@ fun OnBoardingScreen(
             ) {
                 //Skip Button
                 Button(
-                    onClick = {},
+                    onClick = onSkip,
                     modifier = Modifier.border(width = 1.dp, color = Color.Transparent),
                     colors = ButtonDefaults.elevatedButtonColors(
                         containerColor = Color.Transparent, contentColor = Color(
@@ -210,14 +207,18 @@ fun OnBoardingScreen(
                                 )
                             }
                         }
-//                        Toast.makeText(context,screenProgress.value,Toast.LENGTH_SHORT).show()
                         val coroutineScope = rememberCoroutineScope()
+                        val context = LocalContext.current
                         ElevatedButton(
                             onClick = {
                                 val nextPage =
                                     (pagerState.currentPage + 1).coerceAtMost(pagerState.pageCount - 1)
                                 coroutineScope.launch {
-                                    pagerState.animateScrollToPage(nextPage)
+                                    if (nextPage > 2) Toast.makeText(
+                                        context,
+                                        "reached",
+                                        Toast.LENGTH_SHORT
+                                    ).show() else pagerState.animateScrollToPage(nextPage)
                                 }
                             },
                             modifier = Modifier

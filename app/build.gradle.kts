@@ -41,6 +41,7 @@ android {
 
 dependencies {
 
+
     implementation (libs.accompanist.navigation.animation)
     implementation (libs.androidx.navigation.compose)
     implementation(libs.accompanist.systemuicontroller)

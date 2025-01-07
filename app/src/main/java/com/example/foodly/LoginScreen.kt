@@ -2,11 +2,9 @@
 
 package com.example.foodly
 
-import android.media.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,34 +13,29 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -86,7 +79,6 @@ fun LogInScreen(stateViewModel: StateViewModel = StateViewModel()) {
                 Text(
                     "Welcome!",
                     style = TextStyle(
-                        color = Color.Black,
                         fontWeight = FontWeight.ExtraBold,
                         fontSize = 22.sp
                     ),
@@ -103,46 +95,65 @@ fun LogInScreen(stateViewModel: StateViewModel = StateViewModel()) {
                         .padding(top = 35.dp)
                 ) {
                     TextInputField(
-                        stateViewModel = stateViewModel,
-                        purpose = "email",
-                        leadingIcon = painterResource(R.drawable.baseline_attach_email_24),
+                        leadingIcon = {
+                            Icon(
+                                painterResource(R.drawable.baseline_attach_email_24),
+                                contentDescription = null
+                            )
+                        },
                         placeHolder = "Email",
                         modifier = Modifier
-                            .padding(top = 5.dp)
-                            .focusRequester(stateViewModel.focusRequester1.Default)
-                            .border(
-                                width = 1.dp,
-                                color = Color(appThemeColor1.toArgb()),
-                                shape = RoundedCornerShape(26.dp)
-                            )
-                    )
-                    TextInputField(
-                        stateViewModel = stateViewModel,
-                        purpose = "password",
-                        leadingIcon = painterResource(R.drawable.baseline_admin_panel_settings_24),
-                        placeHolder = "Password",
-                        modifier = Modifier
-                            .clickable {}
+                            .clickable { }
                             .padding(top = 25.dp)
-                            .focusRequester(stateViewModel.focusRequester1.Default)
+                            .focusRequester(stateViewModel.focusRequester1)
                             .border(
                                 width = 1.dp,
                                 color = Color(appThemeColor1.toArgb()),
                                 shape = RoundedCornerShape(26.dp)
                             ),
-                        visualTransformation = PasswordVisualTransformation()
+                        visualTransformation = VisualTransformation.None,
+                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+                        keyboardActions = KeyboardActions(onNext = { stateViewModel.focusRequester2.requestFocus() }),
+                        onValueChange = { stateViewModel.email.value = it },
+                        value = stateViewModel.email.value
                     )
-                    Row {
-                        Checkbox(
-                            checked = stateViewModel.showPasswordLogin.value,
-                            onCheckedChange = {
-                                stateViewModel.showPasswordLogin.value =
-                                    !stateViewModel.showPasswordLogin.value
-                            },
-                            colors = CheckboxDefaults.colors(checkedColor = appThemeColor1)
-                        )
-                        Text(text = "Show Password", modifier = Modifier.padding(top = 15.dp))
-                    }
+                    TextInputField(
+                        leadingIcon = {
+                            Icon(
+                                painterResource(R.drawable.baseline_admin_panel_settings_24),
+                                contentDescription = null
+                            )
+                        },
+                        trailingIcon = {
+                            Icon(
+                                if (stateViewModel.showPasswordLogin.value) painterResource(R.drawable.unhide) else painterResource(
+                                    R.drawable.hide
+                                ),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .clickable {
+                                        stateViewModel.showPasswordLogin.value =
+                                            !stateViewModel.showPasswordLogin.value
+                                    }
+                            )
+                        },
+                        placeHolder = "Password",
+                        modifier = Modifier
+                            .clickable { }
+                            .padding(top = 25.dp)
+                            .focusRequester(stateViewModel.focusRequester2)
+                            .border(
+                                width = 1.dp,
+                                color = Color(appThemeColor1.toArgb()),
+                                shape = RoundedCornerShape(26.dp)
+                            ),
+                        visualTransformation = if (stateViewModel.showPasswordLogin.value) VisualTransformation.None else PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(onNext = null),
+                        onValueChange = { stateViewModel.password.value = it },
+                        value = stateViewModel.password.value
+                    )
                     ElevatedButton(
                         onClick = {}, colors = ButtonDefaults.elevatedButtonColors(
                             appThemeColor2
@@ -153,16 +164,38 @@ fun LogInScreen(stateViewModel: StateViewModel = StateViewModel()) {
                     ) {
                         Text(text = "Log In", color = Color.White)
                     }
-                    Row(modifier = Modifier.padding(top = 40.dp)) {
-                        Text(text = "Don't have an account? ")
-                        Text(
-                            text = "Sign Up", style = TextStyle(
-                                fontWeight = FontWeight.Bold, color = Color(
-                                    appThemeColor2.toArgb()
+                    Column(
+                        modifier = Modifier.padding(top = 25.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(text = "or sign up with")
+                        Row(modifier = Modifier.padding(top = 5.dp)) {
+                            IconButton(onClick = {}) {
+                                Image(
+                                    painterResource(R.drawable.icons8_google),
+                                    contentDescription = "google icon"
                                 )
-                            ),
-                            modifier = Modifier.clickable {  }
-                        )
+                            }
+                            IconButton(onClick = {}) {
+                                Image(
+                                    painterResource(R.drawable.icons8_facebook),
+                                    contentDescription = "facebook icon"
+                                )
+                            }
+                        }
+                        Row(modifier = Modifier.padding(top = 25.dp)) {
+                            Text(text = "Don't have an account? ")
+                            Text(
+                                text = "Sign Up", style = TextStyle(
+                                    fontWeight = FontWeight.Bold, color = Color(
+                                        appThemeColor2.toArgb()
+                                    )
+                                ),
+                                modifier = Modifier
+                                    .padding(top = 2.dp)
+                                    .clickable { }
+                            )
+                        }
                     }
                 }
             }

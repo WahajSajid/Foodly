@@ -22,8 +22,8 @@ class StateViewModel:ViewModel() {
 
 
     //focus requester
-    val focusRequester1 = FocusRequester
-    val focusRequester2 = FocusRequester
-    val focusRequester3 = FocusRequester
-    val focusRequester4 = FocusRequester
+    val focusRequester1 = FocusRequester()
+    val focusRequester2 = FocusRequester()
+    val focusRequester3 = FocusRequester()
+    val focusRequester4 = FocusRequester()
 }

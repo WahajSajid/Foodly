@@ -31,7 +31,7 @@ fun TopBar(heading:String = ""){
                 color = Color.White,
                 fontWeight = FontWeight.Bold
             ),
-            modifier = Modifier.padding(top = 10.dp)
+            modifier = Modifier.padding(top = 30.dp)
         )
     }
 }

@@ -7,32 +7,33 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun TextInputField(
-    stateViewModel: StateViewModel = viewModel(),
-    purpose: String = "",
-    leadingIcon: Painter,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
     placeHolder: String = "",
     modifier: Modifier = Modifier,
-    visualTransformation: VisualTransformation = VisualTransformation.None
-) {
-    when(purpose){"name" -> stateViewModel.name.value "email" -> stateViewModel.email.value "password" ->stateViewModel.password.value else -> null}?.let {
-        TextField(
-        value = it,
-        onValueChange = { when(purpose) {"name" -> stateViewModel.name.value = it "email" ->stateViewModel.email.value = it "password" ->stateViewModel.password.value = it} },
-        leadingIcon = { Icon(painter = leadingIcon, contentDescription = "leading icon") },
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(),
+    keyboardActions: KeyboardActions = KeyboardActions(),
+    onValueChange: (String) -> Unit = {},
+    value: String ="",
+
+    ) {
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
+        leadingIcon = leadingIcon,
+        trailingIcon = trailingIcon,
         colors = TextFieldDefaults.colors(
             unfocusedContainerColor = Color.Transparent,
             focusedContainerColor = Color.Transparent,
@@ -41,26 +42,15 @@ fun TextInputField(
             disabledIndicatorColor = Color.Transparent,
         ),
         modifier = modifier,
-            visualTransformation = if (stateViewModel.showPasswordLogin.value) VisualTransformation.None else PasswordVisualTransformation(),
+        visualTransformation = visualTransformation,
         placeholder = { Text(text = placeHolder) },
-        keyboardOptions = if (purpose == "name" || purpose == "email") KeyboardOptions.Default.copy(
-            imeAction = ImeAction.Next
-        ) else KeyboardOptions.Default.copy(
-            imeAction = ImeAction.Done
-        ),
-        keyboardActions = when (purpose) {
-            "name" -> KeyboardActions(onNext = { stateViewModel.focusRequester2.Default.requestFocus() })
-            "email" -> KeyboardActions(onNext = { stateViewModel.focusRequester3.Default.requestFocus() })
-            else -> KeyboardActions(
-                onDone = null
-            )
-        }
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions
     )
-    }
 }
 
 @Preview(name = "Input Text Field")
 @Composable
 private fun InputFieldPreview() {
-    TextInputField(leadingIcon = painterResource(R.drawable.baseline_attach_email_24))
+    TextInputField()
 }
