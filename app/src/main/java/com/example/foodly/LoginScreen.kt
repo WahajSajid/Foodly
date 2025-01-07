@@ -48,18 +48,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 @Composable
 fun LogInScreen(stateViewModel: StateViewModel = StateViewModel()) {
 
-    //Setting the app bar theme color
-    val systemUiController = rememberSystemUiController()
-    LaunchedEffect(Unit) {
-        systemUiController.setStatusBarColor(
-            color = Color(appThemeColor1.toArgb()),
-            darkIcons = true
-        )
-        systemUiController.setStatusBarColor(
-            color = Color(appThemeColor1.toArgb()),
-            darkIcons = true
-        )
-    }
+    StatusBarColor(color = Color(appThemeColor1.toArgb()), darkIcons = true)
     Box(
         modifier = Modifier
             .padding(WindowInsets.statusBars.asPaddingValues())
