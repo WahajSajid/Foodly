@@ -16,9 +16,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -46,6 +49,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.foodly.ui.theme.appThemeColor1
+import com.example.foodly.ui.theme.appThemeColor2
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
@@ -129,8 +133,36 @@ fun LogInScreen(stateViewModel: StateViewModel = StateViewModel()) {
                         visualTransformation = PasswordVisualTransformation()
                     )
                     Row {
-                        Checkbox(checked = stateViewModel.showPasswordLogin.value, onCheckedChange = {stateViewModel.showPasswordLogin.value = !stateViewModel.showPasswordLogin.value}, colors = CheckboxDefaults.colors(checkedColor = appThemeColor1))
+                        Checkbox(
+                            checked = stateViewModel.showPasswordLogin.value,
+                            onCheckedChange = {
+                                stateViewModel.showPasswordLogin.value =
+                                    !stateViewModel.showPasswordLogin.value
+                            },
+                            colors = CheckboxDefaults.colors(checkedColor = appThemeColor1)
+                        )
                         Text(text = "Show Password", modifier = Modifier.padding(top = 15.dp))
+                    }
+                    ElevatedButton(
+                        onClick = {}, colors = ButtonDefaults.elevatedButtonColors(
+                            appThemeColor2
+                        ),
+                        modifier = Modifier
+                            .width(180.dp)
+                            .padding(top = 100.dp)
+                    ) {
+                        Text(text = "Log In", color = Color.White)
+                    }
+                    Row(modifier = Modifier.padding(top = 40.dp)) {
+                        Text(text = "Don't have an account? ")
+                        Text(
+                            text = "Sign Up", style = TextStyle(
+                                fontWeight = FontWeight.Bold, color = Color(
+                                    appThemeColor2.toArgb()
+                                )
+                            ),
+                            modifier = Modifier.clickable {  }
+                        )
                     }
                 }
             }
