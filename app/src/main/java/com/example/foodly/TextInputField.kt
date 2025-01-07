@@ -14,6 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 
@@ -21,16 +23,16 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 fun TextInputField(
     stateViewModel: StateViewModel = viewModel(),
     purpose: String = "",
-    icon: Painter,
+    leadingIcon: Painter,
     placeHolder: String = "",
     modifier: Modifier = Modifier,
-    state:String = ""
+    visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     when(purpose){"name" -> stateViewModel.name.value "email" -> stateViewModel.email.value "password" ->stateViewModel.password.value else -> null}?.let {
         TextField(
         value = it,
         onValueChange = { when(purpose) {"name" -> stateViewModel.name.value = it "email" ->stateViewModel.email.value = it "password" ->stateViewModel.password.value = it} },
-        leadingIcon = { Icon(painter = icon, contentDescription = "leading icon") },
+        leadingIcon = { Icon(painter = leadingIcon, contentDescription = "leading icon") },
         colors = TextFieldDefaults.colors(
             unfocusedContainerColor = Color.Transparent,
             focusedContainerColor = Color.Transparent,
@@ -39,6 +41,7 @@ fun TextInputField(
             disabledIndicatorColor = Color.Transparent,
         ),
         modifier = modifier,
+            visualTransformation = if (stateViewModel.showPasswordLogin.value) VisualTransformation.None else PasswordVisualTransformation(),
         placeholder = { Text(text = placeHolder) },
         keyboardOptions = if (purpose == "name" || purpose == "email") KeyboardOptions.Default.copy(
             imeAction = ImeAction.Next
@@ -59,5 +62,5 @@ fun TextInputField(
 @Preview(name = "Input Text Field")
 @Composable
 private fun InputFieldPreview() {
-    TextInputField(icon = painterResource(R.drawable.baseline_attach_email_24))
+    TextInputField(leadingIcon = painterResource(R.drawable.baseline_attach_email_24))
 }

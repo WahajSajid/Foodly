@@ -13,6 +13,9 @@ class StateViewModel:ViewModel() {
     private val _password = mutableStateOf("")
     var password = _password
 
+    private val _showPasswordLogin = mutableStateOf(false)
+    var showPasswordLogin = _showPasswordLogin
+
     //Register Screen
     private val _name = mutableStateOf("")
     var name = _name

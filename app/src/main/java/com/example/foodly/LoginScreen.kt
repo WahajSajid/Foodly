@@ -5,6 +5,7 @@ package com.example.foodly
 import android.media.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -37,6 +40,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -96,7 +101,7 @@ fun LogInScreen(stateViewModel: StateViewModel = StateViewModel()) {
                     TextInputField(
                         stateViewModel = stateViewModel,
                         purpose = "email",
-                        icon = painterResource(R.drawable.baseline_attach_email_24),
+                        leadingIcon = painterResource(R.drawable.baseline_attach_email_24),
                         placeHolder = "Email",
                         modifier = Modifier
                             .padding(top = 5.dp)
@@ -110,17 +115,23 @@ fun LogInScreen(stateViewModel: StateViewModel = StateViewModel()) {
                     TextInputField(
                         stateViewModel = stateViewModel,
                         purpose = "password",
-                        icon = painterResource(R.drawable.baseline_attach_email_24),
+                        leadingIcon = painterResource(R.drawable.baseline_admin_panel_settings_24),
                         placeHolder = "Password",
                         modifier = Modifier
+                            .clickable {}
                             .padding(top = 25.dp)
                             .focusRequester(stateViewModel.focusRequester1.Default)
                             .border(
                                 width = 1.dp,
                                 color = Color(appThemeColor1.toArgb()),
                                 shape = RoundedCornerShape(26.dp)
-                            )
+                            ),
+                        visualTransformation = PasswordVisualTransformation()
                     )
+                    Row {
+                        Checkbox(checked = stateViewModel.showPasswordLogin.value, onCheckedChange = {stateViewModel.showPasswordLogin.value = !stateViewModel.showPasswordLogin.value}, colors = CheckboxDefaults.colors(checkedColor = appThemeColor1))
+                        Text(text = "Show Password", modifier = Modifier.padding(top = 15.dp))
+                    }
                 }
             }
         }
