@@ -114,7 +114,7 @@ fun LogInScreen(stateViewModel: StateViewModel = StateViewModel()) {
                             )
                         },
                         trailingIcon = {
-                            Icon(
+                            Image(
                                 if (stateViewModel.showPasswordLogin.value) painterResource(R.drawable.unhide) else painterResource(
                                     R.drawable.hide
                                 ),
