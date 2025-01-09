@@ -57,6 +57,7 @@ fun RegisterScreen(stateViewModel: StateViewModel = viewModel(), onBack:() ->Uni
                 .fillMaxSize()
                 .padding(top = 120.dp)
         ) {
+
             Column {
                 Text(
                     "Full Name",
