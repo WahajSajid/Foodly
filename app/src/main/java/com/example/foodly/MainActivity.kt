@@ -2,15 +2,11 @@ package com.example.foodly
 
 import android.app.Activity
 import android.os.Bundle
-import android.window.SplashScreen
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +14,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.foodly.ui.theme.FoodlyTheme
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -79,7 +76,19 @@ class MainActivity : ComponentActivity() {
                         enterTransition = { slideInHorizontally { -it } },
                         exitTransition = { slideOutHorizontally { it } }
                     ) {
-                        LogInScreen(stateViewModel = stateViewModel)
+                        LogInScreen(
+                            stateViewModel = stateViewModel,
+                            onSignUp = { navController.navigate("RegisterScreen") }, onBack = {navController.navigateUp()})
+                    }
+                    composable(
+                        route = "RegisterScreen",
+                        enterTransition = { slideInHorizontally { -it } },
+                        exitTransition = { slideOutHorizontally { it } }
+                    ) {
+                        RegisterScreen(
+                            stateViewModel = stateViewModel,
+                            onBack = { navController.navigateUp() },
+                            onSignIn = { navController.navigate("LogInScreen") })
                     }
                 }
 

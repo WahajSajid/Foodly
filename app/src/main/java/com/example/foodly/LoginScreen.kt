@@ -1,4 +1,4 @@
-@file:Suppress("DEPRECATION")
+
 
 package com.example.foodly
 
@@ -26,7 +26,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRequester
@@ -43,10 +42,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.foodly.ui.theme.appThemeColor1
 import com.example.foodly.ui.theme.appThemeColor2
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun LogInScreen(stateViewModel: StateViewModel = StateViewModel()) {
+fun LogInScreen(stateViewModel: StateViewModel = StateViewModel(), onSignUp:() ->Unit = {}, onBack:() ->Unit = {}) {
 
     StatusBarColor(color = Color(appThemeColor1.toArgb()), darkIcons = true)
     Box(
@@ -54,7 +52,7 @@ fun LogInScreen(stateViewModel: StateViewModel = StateViewModel()) {
             .padding(WindowInsets.statusBars.asPaddingValues())
             .fillMaxSize()
     ) {
-        TopBar(heading = "Log In")
+        TopBar(heading = "Log In", onBack = onBack)
         ElevatedCard(
             modifier = Modifier
                 .fillMaxSize()
@@ -81,7 +79,7 @@ fun LogInScreen(stateViewModel: StateViewModel = StateViewModel()) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 35.dp)
+                        .padding(top = 25.dp)
                 ) {
                     TextInputField(
                         leadingIcon = {
@@ -149,7 +147,7 @@ fun LogInScreen(stateViewModel: StateViewModel = StateViewModel()) {
                         ),
                         modifier = Modifier
                             .width(180.dp)
-                            .padding(top = 100.dp)
+                            .padding(top = 30.dp)
                     ) {
                         Text(text = "Log In", color = Color.White)
                     }
@@ -182,7 +180,7 @@ fun LogInScreen(stateViewModel: StateViewModel = StateViewModel()) {
                                 ),
                                 modifier = Modifier
                                     .padding(top = 2.dp)
-                                    .clickable { }
+                                    .clickable {onSignUp()}
                             )
                         }
                     }

@@ -44,25 +44,28 @@ import com.example.foodly.ui.theme.appThemeColor1
 import com.example.foodly.ui.theme.appThemeColor2
 
 @Composable
-fun RegisterScreen(stateViewModel: StateViewModel = viewModel(), onBack:() ->Unit = {}) {
+fun RegisterScreen(
+    stateViewModel: StateViewModel = viewModel(),
+    onBack: () -> Unit = {},
+    onSignIn: () -> Unit = {}
+) {
     StatusBarColor(color = Color(appThemeColor1.toArgb()), darkIcons = true)
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(WindowInsets.statusBars.asPaddingValues())
     ) {
-        TopBar(heading = "New Account")
+        TopBar(heading = "New Account", onBack = onBack)
         ElevatedCard(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 120.dp)
+                .padding(top = 45.dp)
         ) {
-
             Column {
                 Text(
                     "Full Name",
                     style = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 18.sp),
-                    modifier = Modifier.padding(start = 55.dp, top = 20.dp)
+                    modifier = Modifier.padding(start = 55.dp, top = 10.dp)
                 )
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -70,11 +73,11 @@ fun RegisterScreen(stateViewModel: StateViewModel = viewModel(), onBack:() ->Uni
                 ) {
                     TextInputField(
                         value = stateViewModel.name.value,
-                        onValueChange = {stateViewModel.name.value = it},
+                        onValueChange = { stateViewModel.name.value = it },
                         placeHolder = "Name",
                         modifier = Modifier
                             .clickable { }
-                            .padding(top = 8.dp)
+                            .padding(top = 5.dp)
                             .focusRequester(stateViewModel.focusRequester1)
                             .border(
                                 width = 1.dp,
@@ -88,7 +91,7 @@ fun RegisterScreen(stateViewModel: StateViewModel = viewModel(), onBack:() ->Uni
                 Text(
                     "Email",
                     style = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 18.sp),
-                    modifier = Modifier.padding(start = 55.dp, top = 20.dp)
+                    modifier = Modifier.padding(start = 55.dp, top = 10.dp)
                 )
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -96,11 +99,11 @@ fun RegisterScreen(stateViewModel: StateViewModel = viewModel(), onBack:() ->Uni
                 ) {
                     TextInputField(
                         value = stateViewModel.email.value,
-                        onValueChange = {stateViewModel.email.value = it},
+                        onValueChange = { stateViewModel.email.value = it },
                         placeHolder = "Email",
                         modifier = Modifier
                             .clickable { }
-                            .padding(top = 8.dp)
+                            .padding(top = 5.dp)
                             .focusRequester(stateViewModel.focusRequester2)
                             .border(
                                 width = 1.dp,
@@ -114,7 +117,7 @@ fun RegisterScreen(stateViewModel: StateViewModel = viewModel(), onBack:() ->Uni
                 Text(
                     "Mobile Number",
                     style = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 18.sp),
-                    modifier = Modifier.padding(start = 55.dp, top = 20.dp)
+                    modifier = Modifier.padding(start = 55.dp, top = 10.dp)
                 )
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -122,11 +125,11 @@ fun RegisterScreen(stateViewModel: StateViewModel = viewModel(), onBack:() ->Uni
                 ) {
                     TextInputField(
                         value = stateViewModel.mobileNumber.value,
-                        onValueChange = {stateViewModel.mobileNumber.value = it},
+                        onValueChange = { stateViewModel.mobileNumber.value = it },
                         placeHolder = "Number",
                         modifier = Modifier
                             .clickable { }
-                            .padding(top = 8.dp)
+                            .padding(top = 5.dp)
                             .focusRequester(stateViewModel.focusRequester3)
                             .border(
                                 width = 1.dp,
@@ -140,7 +143,7 @@ fun RegisterScreen(stateViewModel: StateViewModel = viewModel(), onBack:() ->Uni
                 Text(
                     "Password",
                     style = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 18.sp),
-                    modifier = Modifier.padding(start = 55.dp, top = 20.dp)
+                    modifier = Modifier.padding(start = 55.dp, top = 10.dp)
                 )
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -148,11 +151,11 @@ fun RegisterScreen(stateViewModel: StateViewModel = viewModel(), onBack:() ->Uni
                 ) {
                     TextInputField(
                         value = stateViewModel.password.value,
-                        onValueChange = {stateViewModel.password.value = it},
+                        onValueChange = { stateViewModel.password.value = it },
                         placeHolder = "Password",
                         modifier = Modifier
                             .clickable { }
-                            .padding(top = 8.dp)
+                            .padding(top = 5.dp)
                             .focusRequester(stateViewModel.focusRequester4)
                             .border(
                                 width = 1.dp,
@@ -162,12 +165,15 @@ fun RegisterScreen(stateViewModel: StateViewModel = viewModel(), onBack:() ->Uni
                         trailingIcon = {
                             Image(
                                 if (stateViewModel.showPasswordRegister.value) painterResource(
-                                    R.drawable.hide
-                                ) else painterResource(R.drawable.unhide),
+                                    R.drawable.unhide
+                                ) else painterResource(R.drawable.hide),
                                 contentDescription = null,
                                 Modifier
                                     .size(20.dp)
-                                    .clickable { stateViewModel.showPasswordRegister.value = !stateViewModel.showPasswordRegister.value }
+                                    .clickable {
+                                        stateViewModel.showPasswordRegister.value =
+                                            !stateViewModel.showPasswordRegister.value
+                                    }
                             )
                         },
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
@@ -178,7 +184,7 @@ fun RegisterScreen(stateViewModel: StateViewModel = viewModel(), onBack:() ->Uni
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 25.dp),
+                        .padding(top = 15.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(text = "By continuing, you agree to")
@@ -189,21 +195,24 @@ fun RegisterScreen(stateViewModel: StateViewModel = viewModel(), onBack:() ->Uni
                         Text(
                             text = "Terms of Use ", color = Color(
                                 appThemeColor2.toArgb()
-                            )
+                            ), modifier = Modifier.clickable { }
                         )
                         Text(text = "and")
-                        Text(text = "Privacy Policy", color = Color(appThemeColor2.toArgb()))
+                        Text(
+                            text = " Privacy Policy",
+                            color = Color(appThemeColor2.toArgb()),
+                            modifier = Modifier.clickable { })
                     }
                     ElevatedButton(
                         onClick = {},
                         modifier = Modifier
                             .width(200.dp)
-                            .padding(top = 20.dp),
+                            .padding(top = 10.dp),
                         colors = ButtonDefaults.elevatedButtonColors(
                             appThemeColor2
                         )
                     ) {
-                        Text(text = "Sign Up", color = Color.White, fontSize = 25.sp)
+                        Text(text = "Sign Up", color = Color.White)
                     }
                     Text(text = "or sign up with", modifier = Modifier.padding(top = 5.dp))
                     Row(
@@ -223,9 +232,16 @@ fun RegisterScreen(stateViewModel: StateViewModel = viewModel(), onBack:() ->Uni
                             )
                         }
                     }
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
                         Text(text = "Already have an account? ")
-                        Text(text = "Log In", color = Color(appThemeColor2.toArgb()))
+                        Text(
+                            text = "Log In",
+                            fontWeight = FontWeight.Bold,
+                            color = Color(appThemeColor2.toArgb()),
+                            modifier = Modifier.clickable { onSignIn() })
                     }
                 }
             }
