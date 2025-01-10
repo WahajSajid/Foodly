@@ -59,7 +59,7 @@ fun RegisterScreen(
         ElevatedCard(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 45.dp)
+                .padding(top = 80.dp)
         ) {
             Column {
                 Text(
@@ -114,32 +114,7 @@ fun RegisterScreen(
                         keyboardActions = KeyboardActions(onNext = { stateViewModel.focusRequester3.requestFocus() })
                     )
                 }
-                Text(
-                    "Mobile Number",
-                    style = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 18.sp),
-                    modifier = Modifier.padding(start = 55.dp, top = 10.dp)
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    TextInputField(
-                        value = stateViewModel.mobileNumber.value,
-                        onValueChange = { stateViewModel.mobileNumber.value = it },
-                        placeHolder = "Number",
-                        modifier = Modifier
-                            .clickable { }
-                            .padding(top = 5.dp)
-                            .focusRequester(stateViewModel.focusRequester3)
-                            .border(
-                                width = 1.dp,
-                                color = Color(appThemeColor1.toArgb()),
-                                shape = RoundedCornerShape(26.dp)
-                            ),
-                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
-                        keyboardActions = KeyboardActions(onNext = { stateViewModel.focusRequester4.requestFocus() })
-                    )
-                }
+
                 Text(
                     "Password",
                     style = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 18.sp),

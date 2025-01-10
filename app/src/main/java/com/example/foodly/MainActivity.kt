@@ -58,8 +58,15 @@ class MainActivity : ComponentActivity() {
                     ) {
                         WelcomeScreen(
                             navController = navController,
-                            onSignIn = { navController.navigate("OnBoardingScreen") },
-                            stateViewModel = stateViewModel
+                            onSignIn = {
+                                stateViewModel.welcomeScreenButtonClicked.value = "SignIn"
+                                navController.navigate("OnBoardingScreen")
+                            },
+                            onSignUp = {
+                                stateViewModel.welcomeScreenButtonClicked.value = "SignUp"
+                                navController.navigate("OnBoardingScreen")
+                            },
+                            stateViewModel = stateViewModel,
                         )
                     }
                     composable(
@@ -68,7 +75,10 @@ class MainActivity : ComponentActivity() {
                         exitTransition = { slideOutHorizontally { it } }
                     ) {
                         OnBoardingScreen(
-                            onSkip = { navController.navigate("LogInScreen") }
+                            onSkip = {
+                                if(stateViewModel.welcomeScreenButtonClicked.value == "SignIn") navController.navigate("LogInScreen")
+                                else navController.navigate("RegisterScreen")
+                            }, stateViewModel = stateViewModel, navController = navController
                         )
                     }
                     composable(
@@ -78,7 +88,8 @@ class MainActivity : ComponentActivity() {
                     ) {
                         LogInScreen(
                             stateViewModel = stateViewModel,
-                            onSignUp = { navController.navigate("RegisterScreen") }, onBack = {navController.navigateUp()})
+                            onSignUp = { navController.navigate("RegisterScreen") },
+                            onBack = { navController.navigateUp() })
                     }
                     composable(
                         route = "RegisterScreen",

@@ -45,6 +45,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.foodly.ui.theme.appThemeColor1
 import com.example.foodly.ui.theme.appThemeColor2
@@ -53,7 +54,11 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 
 @Composable
-fun OnBoardingScreen(onSkip: () -> Unit = {}, onNext: () -> Unit = {}) {
+fun OnBoardingScreen(
+    onSkip: () -> Unit = {}, navController: NavController = NavController(
+        LocalContext.current
+    ), stateViewModel: StateViewModel = viewModel()
+) {
     val systemUiController = rememberSystemUiController()
     LaunchedEffect(Unit) {
         systemUiController.setStatusBarColor(
@@ -111,9 +116,11 @@ fun OnBoardingScreen(onSkip: () -> Unit = {}, onNext: () -> Unit = {}) {
         }
         //Implementing horizontal pager
         val pagerState = rememberPagerState(pageCount = { 3 })
+        var pageCount = 0
         Box {
             HorizontalPager(state = pagerState, modifier = Modifier.fillMaxHeight()) { page ->
                 //On Boarding Screen Image
+                pageCount = page
                 Column(
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.Start,
@@ -211,14 +218,19 @@ fun OnBoardingScreen(onSkip: () -> Unit = {}, onNext: () -> Unit = {}) {
                         val context = LocalContext.current
                         ElevatedButton(
                             onClick = {
-                                val nextPage =
-                                    (pagerState.currentPage + 1).coerceAtMost(pagerState.pageCount - 1)
-                                coroutineScope.launch {
-                                    if (nextPage > 2) Toast.makeText(
-                                        context,
-                                        "reached",
-                                        Toast.LENGTH_SHORT
-                                    ).show() else pagerState.animateScrollToPage(nextPage)
+                                pageCount+=1
+                                if(pageCount == 4){
+                                    if(stateViewModel.welcomeScreenButtonClicked.value == "SignIn") navController.navigate("LoginScreen")
+                                    else navController.navigate("RegisterScreen")
+                                } else{
+                                    val nextPage =
+                                        (pagerState.currentPage + 1).coerceAtMost(pagerState.pageCount)
+                                    coroutineScope.launch {
+                                        if(nextPage == 3){
+                                            if(stateViewModel.welcomeScreenButtonClicked.value == "SignIn") navController.navigate("LoginScreen")
+                                            else navController.navigate("RegisterScreen")
+                                        } else pagerState.animateScrollToPage(nextPage)
+                                    }
                                 }
                             },
                             modifier = Modifier

@@ -25,6 +25,10 @@ class StateViewModel:ViewModel() {
     private val _showPasswordRegister = mutableStateOf(true)
     var showPasswordRegister = _showPasswordRegister
 
+    private val _welcomeScreenButtonClicked = mutableStateOf("")
+    var welcomeScreenButtonClicked = _welcomeScreenButtonClicked
+
+
     //focus requester
     val focusRequester1 = FocusRequester()
     val focusRequester2 = FocusRequester()
