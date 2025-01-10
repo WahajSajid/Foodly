@@ -1,5 +1,7 @@
 package com.example.foodly
 
+import android.content.Context
+import android.os.Vibrator
 import android.widget.ImageButton
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -39,6 +41,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.foodly.ui.theme.appThemeColor1
 import com.example.foodly.ui.theme.appThemeColor2
@@ -226,6 +229,16 @@ fun RegisterScreen(
     }
 }
 
+//Function to register the user
+fun registerUser(stateViewModel: StateViewModel,context: Context) {
+ //
+}
+
+
+//Function to check input fields are empty or not
+fun inputFieldsEmpty(stateViewModel: StateViewModel): Boolean {
+    return (stateViewModel.name.value == "" && stateViewModel.email.value == "" && stateViewModel.password.value == "")
+}
 
 @Preview(showSystemUi = true)
 @Composable

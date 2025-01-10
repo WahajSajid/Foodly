@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import java.lang.Error
 
 @Composable
 fun TextInputField(
@@ -22,6 +23,7 @@ fun TextInputField(
     keyboardActions: KeyboardActions = KeyboardActions(),
     onValueChange: (String) -> Unit = {},
     value: String ="",
+    isError: Boolean = false
 
     ) {
     TextField(
@@ -40,7 +42,8 @@ fun TextInputField(
         visualTransformation = visualTransformation,
         placeholder = { Text(text = placeHolder) },
         keyboardOptions = keyboardOptions,
-        keyboardActions = keyboardActions
+        keyboardActions = keyboardActions,
+        isError = isError
     )
 }
 
