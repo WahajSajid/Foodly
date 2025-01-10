@@ -232,6 +232,8 @@ fun RegisterScreen(
                             )
                         }
                     }
+
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center
