@@ -42,7 +42,11 @@ android {
 
 dependencies {
 
+    //noinspection UseTomlInstead,BomWithoutPlatform
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    implementation("com.google.android.gms:play-services-auth:21.3.0")
 
+    implementation (libs.okhttp)
     implementation (libs.accompanist.navigation.animation)
     implementation (libs.androidx.navigation.compose)
     implementation(libs.accompanist.systemuicontroller)
@@ -55,6 +59,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.database)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

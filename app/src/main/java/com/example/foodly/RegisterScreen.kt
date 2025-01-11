@@ -1,8 +1,11 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.foodly
 
+import android.app.Activity
 import android.content.Context
-import android.os.Vibrator
-import android.widget.ImageButton
+import android.provider.Settings.Global.getString
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -32,26 +35,37 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.foodly.ui.theme.appThemeColor1
 import com.example.foodly.ui.theme.appThemeColor2
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun RegisterScreen(
     stateViewModel: StateViewModel = viewModel(),
     onBack: () -> Unit = {},
-    onSignIn: () -> Unit = {}
+    onSignIn: () -> Unit = {},
+    onGoogleSignIn: () -> Unit = {},
+    onFacebookSignIn: () -> Unit = {},
+    navController: NavController = NavController(LocalContext.current),
+    database: FirebaseDatabase = FirebaseDatabase.getInstance(),
+    authentication: FirebaseAuth = FirebaseAuth.getInstance(),
 ) {
+    val context = LocalContext.current
     StatusBarColor(color = Color(appThemeColor1.toArgb()), darkIcons = true)
     Box(
         modifier = Modifier
@@ -134,7 +148,7 @@ fun RegisterScreen(
                         modifier = Modifier
                             .clickable { }
                             .padding(top = 5.dp)
-                            .focusRequester(stateViewModel.focusRequester4)
+                            .focusRequester(stateViewModel.focusRequester3)
                             .border(
                                 width = 1.dp,
                                 color = Color(appThemeColor1.toArgb()),
@@ -181,8 +195,62 @@ fun RegisterScreen(
                             color = Color(appThemeColor2.toArgb()),
                             modifier = Modifier.clickable { })
                     }
+                    if (stateViewModel.showDialog.value) ProgressIndicatorDialog(stateViewModel = stateViewModel)
                     ElevatedButton(
-                        onClick = {},
+                        onClick = {
+                            if (inputFieldsEmpty(stateViewModel = stateViewModel)) {
+                                Toast.makeText(
+                                    context,
+                                    "Please fill all the fields",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                if (stateViewModel.email.value.contains("@gmail.com")) {
+                                    if (NetworkUtil.isNetworkAvailable(context)) {
+                                        //Showing the progress dialog when the button clicked and the internet is available
+                                        stateViewModel.showDialog.value = true
+                                        stateViewModel.dialogTittle.value = "Creating Account..."
+                                        HasInternetAccess.hasInternetAccess(object :
+                                            InternetAccessCallBack {
+                                            override fun onInternetAvailable() {
+                                                CoroutineScope(Dispatchers.Main).launch {
+                                                    registerUserWithEmailAndPassword(
+                                                        stateViewModel,
+                                                        context,
+                                                        database,
+                                                        authentication,
+                                                        navController
+                                                    )
+                                                }
+                                            }
+
+                                            override fun onInternetNotAvailable() {
+                                                stateViewModel.showDialog.value = false
+                                                stateViewModel.dialogTittle.value = ""
+                                                CoroutineScope(Dispatchers.Main).launch {
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Connection timed out",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
+
+                                            }
+
+                                        })
+                                    } else Toast.makeText(
+                                        context,
+                                        "No Internet",
+                                        Toast.LENGTH_SHORT
+                                    )
+                                        .show()
+                                } else Toast.makeText(
+                                    context,
+                                    "Email is Invalid",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        },
                         modifier = Modifier
                             .width(200.dp)
                             .padding(top = 10.dp),
@@ -197,7 +265,7 @@ fun RegisterScreen(
                         horizontalArrangement = Arrangement.Center,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        IconButton(onClick = {}) {
+                        IconButton(onClick = onGoogleSignIn) {
                             Image(
                                 painter = painterResource(R.drawable.icons8_google),
                                 contentDescription = null
@@ -229,19 +297,46 @@ fun RegisterScreen(
     }
 }
 
-//Function to register the user
-fun registerUser(stateViewModel: StateViewModel,context: Context) {
- //
+//Function to register the user using email and password
+private fun registerUserWithEmailAndPassword(
+    stateViewModel: StateViewModel,
+    context: Context,
+    database: FirebaseDatabase = FirebaseDatabase.getInstance(),
+    authentication: FirebaseAuth,
+    navController: NavController
+) {
+    val databaseReference = database.getReference("Users")
+    val userData = mapOf("name" to stateViewModel.name.value, "email" to stateViewModel.email.value)
+    authentication.createUserWithEmailAndPassword(
+        stateViewModel.email.value,
+        stateViewModel.password.value
+    )
+        .addOnSuccessListener { task ->
+            val userId = authentication.currentUser?.uid
+            databaseReference.child(userId.toString()).setValue(userData)
+            stateViewModel.showDialog.value = false
+            stateViewModel.dialogTittle.value = ""
+            CoroutineScope(Dispatchers.Main).launch {
+                Toast.makeText(context, "Registration Successful", Toast.LENGTH_SHORT).show()
+                navController.navigate("LoginScreen")
+            }
+        }
+        .addOnFailureListener { error ->
+            stateViewModel.showDialog.value = false
+            stateViewModel.dialogTittle.value = ""
+            CoroutineScope(Dispatchers.Main).launch {
+                Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+}
+
+//Function to Register using Google SignIn method
+fun registerWithGoogle() {
+
 }
 
 
 //Function to check input fields are empty or not
 fun inputFieldsEmpty(stateViewModel: StateViewModel): Boolean {
-    return (stateViewModel.name.value == "" && stateViewModel.email.value == "" && stateViewModel.password.value == "")
-}
-
-@Preview(showSystemUi = true)
-@Composable
-private fun Preview() {
-    RegisterScreen()
+    return (stateViewModel.name.value == "" || stateViewModel.email.value == "" || stateViewModel.password.value == "")
 }

@@ -28,6 +28,11 @@ class StateViewModel:ViewModel() {
     private val _welcomeScreenButtonClicked = mutableStateOf("")
     var welcomeScreenButtonClicked = _welcomeScreenButtonClicked
 
+    private val _showDialog = mutableStateOf(false)
+    var showDialog = _showDialog
+
+    private val _dialogTittle = mutableStateOf("")
+    var dialogTittle = _dialogTittle
 
     //focus requester
     val focusRequester1 = FocusRequester()

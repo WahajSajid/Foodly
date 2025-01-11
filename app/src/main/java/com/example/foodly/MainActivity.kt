@@ -1,7 +1,12 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.foodly
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
@@ -14,22 +19,50 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.foodly.ui.theme.FoodlyTheme
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.delay
+
 
 @Suppress("DEPRECATION")
 @OptIn(ExperimentalAnimationApi::class)
 class MainActivity : ComponentActivity() {
+    private lateinit var authentication: FirebaseAuth
+    private lateinit var database: FirebaseDatabase
+    private lateinit var googleSignInClient: GoogleSignInClient
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val stateViewModel = ViewModelProvider(this)[StateViewModel::class.java]
             val context = LocalContext.current
+            val activity =
+                context as? Activity ?: throw IllegalStateException("Activity context is required")
+            //Initializing the instance of FirebaseAuth and Firebase database
+            authentication = FirebaseAuth.getInstance()
+            database =
+                FirebaseDatabase.getInstance("https://foodly-73947-default-rtdb.asia-southeast1.firebasedatabase.app")
+
+            // Configure Google Sign-In
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken("AIzaSyAzRm4NgRqolgqYvncJ8eQhKyOKQiHQcGE")
+                .requestEmail()
+                .build()
+
+            googleSignInClient = GoogleSignIn.getClient(this, gso)
+
+
+            val stateViewModel = ViewModelProvider(this)[StateViewModel::class.java]
             val navController = rememberNavController()
 
             FoodlyTheme {
@@ -76,7 +109,9 @@ class MainActivity : ComponentActivity() {
                     ) {
                         OnBoardingScreen(
                             onSkip = {
-                                if(stateViewModel.welcomeScreenButtonClicked.value == "SignIn") navController.navigate("LogInScreen")
+                                if (stateViewModel.welcomeScreenButtonClicked.value == "SignIn") navController.navigate(
+                                    "LogInScreen"
+                                )
                                 else navController.navigate("RegisterScreen")
                             }, stateViewModel = stateViewModel, navController = navController
                         )
@@ -99,7 +134,14 @@ class MainActivity : ComponentActivity() {
                         RegisterScreen(
                             stateViewModel = stateViewModel,
                             onBack = { navController.navigateUp() },
-                            onSignIn = { navController.navigate("LogInScreen") })
+                            onSignIn = { navController.navigate("LogInScreen") },
+                            onGoogleSignIn = {
+                                registerUserWithGoogle()
+                            },
+                            database = database,
+                            authentication = authentication,
+                            navController = navController
+                        )
                     }
                 }
 
@@ -113,5 +155,49 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    //Function to register user using
+    private fun registerUserWithGoogle() {
+        val signInIntent = googleSignInClient.signInIntent
+        startActivityForResult(signInIntent, RC_SIGN_IN)
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == RC_SIGN_IN) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            handleSignInResult(task)
+        }
+    }
+
+    private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
+        try {
+            val account = completedTask.getResult(ApiException::class.java)
+            firebaseAuthWithGoogle(account)
+        } catch (e: ApiException) {
+            Toast.makeText(this, e.message.toString(), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun firebaseAuthWithGoogle(account: GoogleSignInAccount?) {
+        val databaseReference = database.getReference("Users")
+        val credential = GoogleAuthProvider.getCredential(account?.idToken, null)
+        authentication.signInWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    val userId = authentication.currentUser?.uid
+                    databaseReference.child("credential").setValue(credential)
+                } else {
+                    Toast.makeText(this, "Authentication Failed.", Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
+    companion object {
+        private const val RC_SIGN_IN = 9001
+        private const val TAG = "MainActivity"
     }
 }
