@@ -1,3 +1,4 @@
+
 @file:Suppress("DEPRECATION")
 
 package com.example.foodly
@@ -28,6 +29,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -46,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.foodly.ui.theme.FoodlyTheme
 import com.example.foodly.ui.theme.appThemeColor1
 import com.example.foodly.ui.theme.appThemeColor2
 import com.google.firebase.auth.FirebaseAuth
@@ -64,240 +70,243 @@ fun RegisterScreen(
     navController: NavController = NavController(LocalContext.current),
     database: FirebaseDatabase = FirebaseDatabase.getInstance(),
     authentication: FirebaseAuth = FirebaseAuth.getInstance(),
+    snackBarHostState:SnackbarHostState
 ) {
     val context = LocalContext.current
     StatusBarColor(color = Color(appThemeColor1.toArgb()), darkIcons = true)
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(WindowInsets.statusBars.asPaddingValues())
-    ) {
-        TopBar(heading = "New Account", onBack = onBack)
-        ElevatedCard(
+    Scaffold(snackbarHost = {
+        FoodlyTheme {
+            SnackbarHost(hostState = snackBarHostState){ data ->
+                Snackbar(contentColor = if(stateViewModel.isOperationSuccessful.value) Color.Green else Color.Red, snackbarData = data)
+            }
+        }
+    }, content = {paddingValues ->
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 80.dp)
+                .padding(paddingValues)
         ) {
-            Column {
-                Text(
-                    "Full Name",
-                    style = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 18.sp),
-                    modifier = Modifier.padding(start = 55.dp, top = 10.dp)
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    TextInputField(
-                        value = stateViewModel.name.value,
-                        onValueChange = { stateViewModel.name.value = it },
-                        placeHolder = "Name",
-                        modifier = Modifier
-                            .clickable { }
-                            .padding(top = 5.dp)
-                            .focusRequester(stateViewModel.focusRequester1)
-                            .border(
-                                width = 1.dp,
-                                color = Color(appThemeColor1.toArgb()),
-                                shape = RoundedCornerShape(26.dp)
-                            ),
-                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
-                        keyboardActions = KeyboardActions(onNext = { stateViewModel.focusRequester2.requestFocus() })
+            TopBar(heading = "New Account", onBack = onBack)
+            ElevatedCard(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 80.dp)
+            ) {
+                Column {
+                    Text(
+                        "Full Name",
+                        style = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 18.sp),
+                        modifier = Modifier.padding(start = 55.dp, top = 10.dp)
                     )
-                }
-                Text(
-                    "Email",
-                    style = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 18.sp),
-                    modifier = Modifier.padding(start = 55.dp, top = 10.dp)
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    TextInputField(
-                        value = stateViewModel.email.value,
-                        onValueChange = { stateViewModel.email.value = it },
-                        placeHolder = "Email",
-                        modifier = Modifier
-                            .clickable { }
-                            .padding(top = 5.dp)
-                            .focusRequester(stateViewModel.focusRequester2)
-                            .border(
-                                width = 1.dp,
-                                color = Color(appThemeColor1.toArgb()),
-                                shape = RoundedCornerShape(26.dp)
-                            ),
-                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
-                        keyboardActions = KeyboardActions(onNext = { stateViewModel.focusRequester3.requestFocus() })
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        TextInputField(
+                            value = stateViewModel.name.value,
+                            onValueChange = { stateViewModel.name.value = it },
+                            placeHolder = "Name",
+                            modifier = Modifier
+                                .clickable { }
+                                .padding(top = 5.dp)
+                                .focusRequester(stateViewModel.focusRequester1)
+                                .border(
+                                    width = 1.dp,
+                                    color = Color(appThemeColor1.toArgb()),
+                                    shape = RoundedCornerShape(26.dp)
+                                ),
+                            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(onNext = { stateViewModel.focusRequester2.requestFocus() })
+                        )
+                    }
+                    Text(
+                        "Email",
+                        style = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 18.sp),
+                        modifier = Modifier.padding(start = 55.dp, top = 10.dp)
                     )
-                }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        TextInputField(
+                            value = stateViewModel.email.value,
+                            onValueChange = { stateViewModel.email.value = it },
+                            placeHolder = "Email",
+                            modifier = Modifier
+                                .clickable { }
+                                .padding(top = 5.dp)
+                                .focusRequester(stateViewModel.focusRequester2)
+                                .border(
+                                    width = 1.dp,
+                                    color = Color(appThemeColor1.toArgb()),
+                                    shape = RoundedCornerShape(26.dp)
+                                ),
+                            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(onNext = { stateViewModel.focusRequester3.requestFocus() })
+                        )
+                    }
 
-                Text(
-                    "Password",
-                    style = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 18.sp),
-                    modifier = Modifier.padding(start = 55.dp, top = 10.dp)
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    TextInputField(
-                        value = stateViewModel.password.value,
-                        onValueChange = { stateViewModel.password.value = it },
-                        placeHolder = "Password",
+                    Text(
+                        "Password",
+                        style = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 18.sp),
+                        modifier = Modifier.padding(start = 55.dp, top = 10.dp)
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        TextInputField(
+                            value = stateViewModel.password.value,
+                            onValueChange = { stateViewModel.password.value = it },
+                            placeHolder = "Password",
+                            modifier = Modifier
+                                .clickable { }
+                                .padding(top = 5.dp)
+                                .focusRequester(stateViewModel.focusRequester3)
+                                .border(
+                                    width = 1.dp,
+                                    color = Color(appThemeColor1.toArgb()),
+                                    shape = RoundedCornerShape(26.dp)
+                                ),
+                            trailingIcon = {
+                                Image(
+                                    if (stateViewModel.showPasswordRegister.value) painterResource(
+                                        R.drawable.unhide
+                                    ) else painterResource(R.drawable.hide),
+                                    contentDescription = null,
+                                    Modifier
+                                        .size(20.dp)
+                                        .clickable {
+                                            stateViewModel.showPasswordRegister.value =
+                                                !stateViewModel.showPasswordRegister.value
+                                        }
+                                )
+                            },
+                            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                            keyboardActions = KeyboardActions(onDone = null),
+                            visualTransformation = if (stateViewModel.showPasswordRegister.value) VisualTransformation.None else PasswordVisualTransformation()
+                        )
+                    }
+                    Column(
                         modifier = Modifier
-                            .clickable { }
-                            .padding(top = 5.dp)
-                            .focusRequester(stateViewModel.focusRequester3)
-                            .border(
-                                width = 1.dp,
-                                color = Color(appThemeColor1.toArgb()),
-                                shape = RoundedCornerShape(26.dp)
-                            ),
-                        trailingIcon = {
-                            Image(
-                                if (stateViewModel.showPasswordRegister.value) painterResource(
-                                    R.drawable.unhide
-                                ) else painterResource(R.drawable.hide),
-                                contentDescription = null,
-                                Modifier
-                                    .size(20.dp)
-                                    .clickable {
-                                        stateViewModel.showPasswordRegister.value =
-                                            !stateViewModel.showPasswordRegister.value
+                            .fillMaxWidth()
+                            .padding(top = 15.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(text = "By continuing, you agree to")
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = "Terms of Use ", color = Color(
+                                    appThemeColor2.toArgb()
+                                ), modifier = Modifier.clickable { }
+                            )
+                            Text(text = "and")
+                            Text(
+                                text = " Privacy Policy",
+                                color = Color(appThemeColor2.toArgb()),
+                                modifier = Modifier.clickable { })
+                        }
+                        if (stateViewModel.showDialog.value) ProgressIndicatorDialog(stateViewModel = stateViewModel)
+                        ElevatedButton(
+                            onClick = {
+                                if (inputFieldsEmpty(stateViewModel = stateViewModel)) {
+                                    stateViewModel.showSnackBar.value = true
+                                    showSnackBar(hostState = snackBarHostState,stateViewModel = stateViewModel, message = "Input all fields first")
+                                } else {
+                                    if (stateViewModel.email.value.contains("@gmail.com")) {
+                                        if (NetworkUtil.isNetworkAvailable(context)) {
+                                            //Showing the progress dialog when the button clicked and the internet is available
+                                            stateViewModel.showDialog.value = true
+                                            stateViewModel.dialogTittle.value = "Creating Account..."
+                                            HasInternetAccess.hasInternetAccess(object :
+                                                InternetAccessCallBack {
+                                                override fun onInternetAvailable() {
+                                                    CoroutineScope(Dispatchers.Main).launch {
+                                                        registerUserWithEmailAndPassword(
+                                                            stateViewModel,
+                                                            context,
+                                                            database,
+                                                            authentication,
+                                                            navController,
+                                                            snackBarHostState
+                                                        )
+                                                    }
+                                                }
+
+                                                override fun onInternetNotAvailable() {
+                                                    stateViewModel.showDialog.value = false
+                                                    stateViewModel.dialogTittle.value = ""
+                                                    stateViewModel.showSnackBar.value = true
+                                                    stateViewModel.isOperationSuccessful.value = false
+                                                    showSnackBar(hostState= snackBarHostState,stateViewModel = stateViewModel,"Unstable Internet")
+
+                                                }
+
+                                            })
+                                        } else {
+                                            stateViewModel.showSnackBar.value = true
+                                            stateViewModel.isOperationSuccessful.value = false
+                                            showSnackBar(hostState = snackBarHostState,stateViewModel = stateViewModel, message = "No Internet")
+                                        }
+                                    } else {
+                                        stateViewModel.showSnackBar.value = true
+                                        stateViewModel.isOperationSuccessful.value = false
+                                        showSnackBar(hostState = snackBarHostState,stateViewModel = stateViewModel, message = "Invalid Email")
                                     }
+                                }
+                            },
+                            modifier = Modifier
+                                .width(200.dp)
+                                .padding(top = 10.dp),
+                            colors = ButtonDefaults.elevatedButtonColors(
+                                appThemeColor2
                             )
-                        },
-                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                        keyboardActions = KeyboardActions(onDone = null),
-                        visualTransformation = if (stateViewModel.showPasswordRegister.value) VisualTransformation.None else PasswordVisualTransformation()
-                    )
-                }
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 15.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(text = "By continuing, you agree to")
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = "Terms of Use ", color = Color(
-                                appThemeColor2.toArgb()
-                            ), modifier = Modifier.clickable { }
-                        )
-                        Text(text = "and")
-                        Text(
-                            text = " Privacy Policy",
-                            color = Color(appThemeColor2.toArgb()),
-                            modifier = Modifier.clickable { })
-                    }
-                    if (stateViewModel.showDialog.value) ProgressIndicatorDialog(stateViewModel = stateViewModel)
-                    ElevatedButton(
-                        onClick = {
-                            if (inputFieldsEmpty(stateViewModel = stateViewModel)) {
-                                Toast.makeText(
-                                    context,
-                                    "Please fill all the fields",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            } else {
-                                if (stateViewModel.email.value.contains("@gmail.com")) {
-                                    if (NetworkUtil.isNetworkAvailable(context)) {
-                                        //Showing the progress dialog when the button clicked and the internet is available
-                                        stateViewModel.showDialog.value = true
-                                        stateViewModel.dialogTittle.value = "Creating Account..."
-                                        HasInternetAccess.hasInternetAccess(object :
-                                            InternetAccessCallBack {
-                                            override fun onInternetAvailable() {
-                                                CoroutineScope(Dispatchers.Main).launch {
-                                                    registerUserWithEmailAndPassword(
-                                                        stateViewModel,
-                                                        context,
-                                                        database,
-                                                        authentication,
-                                                        navController
-                                                    )
-                                                }
-                                            }
+                        ) {
+                            Text(text = "Sign Up", color = Color.White)
+                        }
+                        Text(text = "or sign up with", modifier = Modifier.padding(top = 5.dp))
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
 
-                                            override fun onInternetNotAvailable() {
-                                                stateViewModel.showDialog.value = false
-                                                stateViewModel.dialogTittle.value = ""
-                                                CoroutineScope(Dispatchers.Main).launch {
-                                                    Toast.makeText(
-                                                        context,
-                                                        "Connection timed out",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
-                                                }
-
-                                            }
-
-                                        })
-                                    } else Toast.makeText(
-                                        context,
-                                        "No Internet",
-                                        Toast.LENGTH_SHORT
-                                    )
-                                        .show()
-                                } else Toast.makeText(
-                                    context,
-                                    "Email is Invalid",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                            //Google SignIn Button
+                            IconButton(onClick = onGoogleSignIn) {
+                                Image(
+                                    painter = painterResource(R.drawable.icons8_google),
+                                    contentDescription = null
+                                )
                             }
-                        },
-                        modifier = Modifier
-                            .width(200.dp)
-                            .padding(top = 10.dp),
-                        colors = ButtonDefaults.elevatedButtonColors(
-                            appThemeColor2
-                        )
-                    ) {
-                        Text(text = "Sign Up", color = Color.White)
-                    }
-                    Text(text = "or sign up with", modifier = Modifier.padding(top = 5.dp))
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-
-                        //Google SignIn Button
-                        IconButton(onClick = onGoogleSignIn) {
-                            Image(
-                                painter = painterResource(R.drawable.icons8_google),
-                                contentDescription = null
-                            )
+                            //Facebook SignIn Button
+                            IconButton(onClick = onFacebookSignIn) {
+                                Image(
+                                    painter = painterResource(R.drawable.icons8_facebook),
+                                    contentDescription = null
+                                )
+                            }
                         }
-                        //Facebook SignIn Button
-                        IconButton(onClick = onFacebookSignIn) {
-                            Image(
-                                painter = painterResource(R.drawable.icons8_facebook),
-                                contentDescription = null
-                            )
+
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(text = "Already have an account? ")
+                            Text(
+                                text = "Log In",
+                                fontWeight = FontWeight.Bold,
+                                color = Color(appThemeColor2.toArgb()),
+                                modifier = Modifier.clickable { onSignIn() })
                         }
-                    }
-
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text(text = "Already have an account? ")
-                        Text(
-                            text = "Log In",
-                            fontWeight = FontWeight.Bold,
-                            color = Color(appThemeColor2.toArgb()),
-                            modifier = Modifier.clickable { onSignIn() })
                     }
                 }
             }
         }
-    }
+    })
+
 }
 
 //Function to register the user using email and password
@@ -306,7 +315,8 @@ private fun registerUserWithEmailAndPassword(
     context: Context,
     database: FirebaseDatabase = FirebaseDatabase.getInstance(),
     authentication: FirebaseAuth,
-    navController: NavController
+    navController: NavController,
+    snackBarHostState: SnackbarHostState
 ) {
     val databaseReference = database.getReference("Users")
     val userData = mapOf("name" to stateViewModel.name.value, "email" to stateViewModel.email.value)
@@ -319,17 +329,19 @@ private fun registerUserWithEmailAndPassword(
             databaseReference.child(userId.toString()).setValue(userData)
             stateViewModel.showDialog.value = false
             stateViewModel.dialogTittle.value = ""
+            stateViewModel.showSnackBar.value = true
+            stateViewModel.isOperationSuccessful.value = true
+            showSnackBar(hostState = snackBarHostState,stateViewModel = stateViewModel, message = "Registration Successful")
             CoroutineScope(Dispatchers.Main).launch {
-                Toast.makeText(context, "Registration Successful", Toast.LENGTH_SHORT).show()
                 navController.navigate("LoginScreen")
             }
         }
         .addOnFailureListener { error ->
             stateViewModel.showDialog.value = false
             stateViewModel.dialogTittle.value = ""
-            CoroutineScope(Dispatchers.Main).launch {
-                Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
-            }
+            stateViewModel.showSnackBar.value = true
+            stateViewModel.isOperationSuccessful.value = false
+            showSnackBar(hostState = snackBarHostState,stateViewModel = stateViewModel, message = error.message.toString())
         }
 }
 

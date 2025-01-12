@@ -22,6 +22,7 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -47,9 +48,9 @@ fun LogInScreen(
     onSignUp: () -> Unit = {},
     onBack: () -> Unit = {},
     onGoogleSignIn: () -> Unit = {},
-    onFacebookSignIn: () -> Unit = {}
+    onFacebookSignIn: () -> Unit = {},
+    snackBarHostState:SnackbarHostState
 ) {
-
     StatusBarColor(color = Color(appThemeColor1.toArgb()), darkIcons = true)
     Box(
         modifier = Modifier
@@ -57,6 +58,10 @@ fun LogInScreen(
             .fillMaxSize()
     ) {
         TopBar(heading = "Log In", onBack = onBack)
+        //Showing SnackBar when the registration is successful
+        if(stateViewModel.isOperationSuccessful.value){
+            showSnackBar(hostState = snackBarHostState,stateViewModel,"Registration Successful")
+        }
         ElevatedCard(
             modifier = Modifier
                 .fillMaxSize()
@@ -195,11 +200,4 @@ fun LogInScreen(
             }
         }
     }
-}
-
-
-@Preview(showSystemUi = true, name = "Log In Screen")
-@Composable
-private fun Preview() {
-    LogInScreen()
 }

@@ -16,7 +16,10 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelProvider
@@ -53,26 +56,21 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             context = LocalContext.current
+            val snackBarHostState = remember {SnackbarHostState()}
             val activity =
                 context as? Activity ?: throw IllegalStateException("Activity context is required")
             //Initializing the instance of FirebaseAuth and Firebase database
             authentication = FirebaseAuth.getInstance()
             database =
                 FirebaseDatabase.getInstance("https://foodly-73947-default-rtdb.asia-southeast1.firebasedatabase.app")
-
             // Configure Google Sign-In
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken("AIzaSyAzRm4NgRqolgqYvncJ8eQhKyOKQiHQcGE")
                 .requestEmail()
                 .build()
-
-
             googleSignInClient = GoogleSignIn.getClient(this, gso)
-
-
             stateViewModel = ViewModelProvider(this)[StateViewModel::class.java]
             val navController = rememberNavController()
-
             FoodlyTheme {
                 AnimatedNavHost(
                     navController = navController,
@@ -149,7 +147,8 @@ class MainActivity : ComponentActivity() {
                                         }
                                     })
                                 } else Toast.makeText(context,"No Internet",Toast.LENGTH_SHORT).show()
-                            }
+                            },
+                            snackBarHostState = snackBarHostState
                             )
                     }
                     composable(
@@ -168,7 +167,8 @@ class MainActivity : ComponentActivity() {
                             },
                             database = database,
                             authentication = authentication,
-                            navController = navController
+                            navController = navController,
+                            snackBarHostState = snackBarHostState
                         )
                     }
                 }

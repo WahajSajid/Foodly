@@ -1,5 +1,6 @@
 package com.example.foodly
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.focus.FocusRequester
 import androidx.lifecycle.ViewModel
@@ -34,9 +35,14 @@ class StateViewModel:ViewModel() {
     private val _dialogTittle = mutableStateOf("")
     var dialogTittle = _dialogTittle
 
+    private val _showSnackBar = mutableStateOf(false)
+    var showSnackBar = _showSnackBar
+
+    private val _isOperationSuccessful = mutableStateOf(false)
+    var isOperationSuccessful = _isOperationSuccessful
+
     //focus requester
     val focusRequester1 = FocusRequester()
     val focusRequester2 = FocusRequester()
     val focusRequester3 = FocusRequester()
-    val focusRequester4 = FocusRequester()
 }
