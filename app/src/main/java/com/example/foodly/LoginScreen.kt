@@ -1,5 +1,3 @@
-
-
 package com.example.foodly
 
 import androidx.compose.foundation.Image
@@ -44,7 +42,13 @@ import com.example.foodly.ui.theme.appThemeColor1
 import com.example.foodly.ui.theme.appThemeColor2
 
 @Composable
-fun LogInScreen(stateViewModel: StateViewModel = StateViewModel(), onSignUp:() ->Unit = {}, onBack:() ->Unit = {}) {
+fun LogInScreen(
+    stateViewModel: StateViewModel = StateViewModel(),
+    onSignUp: () -> Unit = {},
+    onBack: () -> Unit = {},
+    onGoogleSignIn: () -> Unit = {},
+    onFacebookSignIn: () -> Unit = {}
+) {
 
     StatusBarColor(color = Color(appThemeColor1.toArgb()), darkIcons = true)
     Box(
@@ -157,13 +161,16 @@ fun LogInScreen(stateViewModel: StateViewModel = StateViewModel(), onSignUp:() -
                     ) {
                         Text(text = "or sign up with")
                         Row(modifier = Modifier.padding(top = 5.dp)) {
-                            IconButton(onClick = {}) {
+
+                            //Google Login Button
+                            IconButton(onClick = onGoogleSignIn) {
                                 Image(
                                     painterResource(R.drawable.icons8_google),
                                     contentDescription = "google icon"
                                 )
                             }
-                            IconButton(onClick = {}) {
+                            //Facebook Login Button
+                            IconButton(onClick = onFacebookSignIn) {
                                 Image(
                                     painterResource(R.drawable.icons8_facebook),
                                     contentDescription = "facebook icon"
@@ -180,7 +187,7 @@ fun LogInScreen(stateViewModel: StateViewModel = StateViewModel(), onSignUp:() -
                                 ),
                                 modifier = Modifier
                                     .padding(top = 2.dp)
-                                    .clickable {onSignUp()}
+                                    .clickable { onSignUp() }
                             )
                         }
                     }

@@ -265,13 +265,16 @@ fun RegisterScreen(
                         horizontalArrangement = Arrangement.Center,
                         modifier = Modifier.fillMaxWidth()
                     ) {
+
+                        //Google SignIn Button
                         IconButton(onClick = onGoogleSignIn) {
                             Image(
                                 painter = painterResource(R.drawable.icons8_google),
                                 contentDescription = null
                             )
                         }
-                        IconButton(onClick = {}) {
+                        //Facebook SignIn Button
+                        IconButton(onClick = onFacebookSignIn) {
                             Image(
                                 painter = painterResource(R.drawable.icons8_facebook),
                                 contentDescription = null

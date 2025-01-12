@@ -46,6 +46,10 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.android.gms:play-services-auth:21.3.0")
 
+    implementation ("com.google.android.gms:play-services-auth:21.3.0")
+    implementation ("com.google.firebase:firebase-auth:23.1.0")
+
+
     implementation (libs.okhttp)
     implementation (libs.accompanist.navigation.animation)
     implementation (libs.androidx.navigation.compose)
