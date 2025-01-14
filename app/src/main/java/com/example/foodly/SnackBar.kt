@@ -10,6 +10,7 @@ fun showSnackBar(
     stateViewModel: StateViewModel,
     message: String,
 ) {
+
     CoroutineScope(Dispatchers.Main).launch {
         if (stateViewModel.showSnackBar.value) {
             hostState.showSnackbar(message)

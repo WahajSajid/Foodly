@@ -57,6 +57,8 @@ fun LogInScreen(
             .padding(WindowInsets.statusBars.asPaddingValues())
             .fillMaxSize()
     ) {
+
+
         TopBar(heading = "Log In", onBack = onBack)
         //Showing SnackBar when the registration is successful
         if(stateViewModel.isOperationSuccessful.value){
