@@ -3,10 +3,7 @@
 
 package com.example.foodly
 
-import android.app.Activity
 import android.content.Context
-import android.provider.Settings.Global.getString
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
