@@ -1,6 +1,5 @@
 package com.example.foodly
 
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.focus.FocusRequester
 import androidx.lifecycle.ViewModel
