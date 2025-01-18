@@ -213,7 +213,7 @@ class MainActivity : ComponentActivity() {
         } catch (e: ApiException) {
             stateViewModel.showDialog.value = false
             stateViewModel.dialogTittle.value = ""
-            Toast.makeText(this, e.message.toString(), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,"${e.message.toString()} firebase exception", Toast.LENGTH_SHORT).show()
             Log.d("firebase_exception", "API Exception")
         }
     }
@@ -228,7 +228,7 @@ class MainActivity : ComponentActivity() {
                     val userId = authentication.currentUser?.uid
                     stateViewModel.showDialog.value = false
                     stateViewModel.dialogTittle.value = ""
-                    databaseReference.child("credential").setValue(credential)
+                    databaseReference.child("credentials").child(userId.toString()).setValue(credential)
                     Toast.makeText(context,"Authentication Successful",Toast.LENGTH_SHORT).show()
                 } else {
                     stateViewModel.showDialog.value = false
@@ -240,6 +240,7 @@ class MainActivity : ComponentActivity() {
 
     companion object {
         private const val RC_SIGN_IN = 9001
-        private const val TAG = "MainActivity"
     }
+
+
 }

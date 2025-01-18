@@ -1,5 +1,4 @@
 
-@file:Suppress("DEPRECATION")
 
 package com.example.foodly
 
@@ -221,7 +220,6 @@ fun RegisterScreen(
                                                     CoroutineScope(Dispatchers.Main).launch {
                                                         registerUserWithEmailAndPassword(
                                                             stateViewModel,
-                                                            context,
                                                             database,
                                                             authentication,
                                                             navController,
@@ -306,7 +304,6 @@ fun RegisterScreen(
 //Function to register the user using email and password
 private fun registerUserWithEmailAndPassword(
     stateViewModel: StateViewModel,
-    context: Context,
     database: FirebaseDatabase = FirebaseDatabase.getInstance(),
     authentication: FirebaseAuth,
     navController: NavController,
@@ -318,7 +315,7 @@ private fun registerUserWithEmailAndPassword(
         stateViewModel.email.value,
         stateViewModel.password.value
     )
-        .addOnSuccessListener { task ->
+        .addOnSuccessListener { _ ->
             val userId = authentication.currentUser?.uid
             databaseReference.child(userId.toString()).setValue(userData)
             stateViewModel.showDialog.value = false
@@ -337,11 +334,6 @@ private fun registerUserWithEmailAndPassword(
             stateViewModel.isOperationSuccessful.value = false
             showSnackBar(hostState = snackBarHostState,stateViewModel = stateViewModel, message = error.message.toString())
         }
-}
-
-//Function to Register using Google SignIn method
-fun registerWithGoogle() {
-
 }
 
 
