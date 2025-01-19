@@ -21,6 +21,8 @@ class StateViewModel:ViewModel() {
     var showPasswordLogin = _showPasswordLogin
 
 
+
+
     private val _showPasswordRegister = mutableStateOf(true)
     var showPasswordRegister = _showPasswordRegister
 
