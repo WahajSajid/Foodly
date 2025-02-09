@@ -63,7 +63,7 @@ class MainActivity : ComponentActivity() {
                 FirebaseDatabase.getInstance("https://foodly-73947-default-rtdb.asia-southeast1.firebasedatabase.app")
             // Configure Google Sign-In
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("AIzaSyAzRm4NgRqolgqYvncJ8eQhKyOKQiHQcGE")
+                .requestIdToken("410591763157-918qchl9qjljbh7aaddabaehfntjhh3i.apps.googleusercontent.com")
                 .requestEmail()
                 .build()
             googleSignInClient = GoogleSignIn.getClient(this, gso)
@@ -226,9 +226,12 @@ class MainActivity : ComponentActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     val userId = authentication.currentUser?.uid
+                    val email = account?.email
+                    val name = account?.displayName
+                    val userDetails = hashMapOf("email" to email, "name" to name)
                     stateViewModel.showDialog.value = false
                     stateViewModel.dialogTittle.value = ""
-                    databaseReference.child("credentials").child(userId.toString()).setValue(credential)
+                    databaseReference.child(userId.toString()).setValue(userDetails)
                     Toast.makeText(context,"Authentication Successful",Toast.LENGTH_SHORT).show()
                 } else {
                     stateViewModel.showDialog.value = false
