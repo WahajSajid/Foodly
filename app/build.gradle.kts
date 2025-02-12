@@ -50,6 +50,9 @@ dependencies {
     implementation("com.google.firebase:firebase-auth:23.2.0")
 
 
+    implementation ("androidx.navigation:navigation-compose:2.8.6")
+    implementation ("androidx.compose.material:material:1.7.7")
+
     implementation(libs.okhttp)
     implementation(libs.accompanist.navigation.animation)
     implementation(libs.androidx.navigation.compose)

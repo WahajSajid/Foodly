@@ -49,12 +49,13 @@ class MainActivity : ComponentActivity() {
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var stateViewModel: StateViewModel
     private lateinit var context: Context
+    private lateinit var homeScreenStateViewModel: HomeScreenStateViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             context = LocalContext.current
-            val snackBarHostState = remember {SnackbarHostState()}
+            val snackBarHostState = remember { SnackbarHostState() }
             val activity =
                 context as? Activity ?: throw IllegalStateException("Activity context is required")
             //Initializing the instance of FirebaseAuth and Firebase database
@@ -67,7 +68,11 @@ class MainActivity : ComponentActivity() {
                 .requestEmail()
                 .build()
             googleSignInClient = GoogleSignIn.getClient(this, gso)
+
+            //Initializing view models
             stateViewModel = ViewModelProvider(this)[StateViewModel::class.java]
+            homeScreenStateViewModel = ViewModelProvider(this)[HomeScreenStateViewModel::class.java]
+
             val navController = rememberNavController()
             FoodlyTheme {
                 AnimatedNavHost(
@@ -130,8 +135,9 @@ class MainActivity : ComponentActivity() {
                             onSignUp = { navController.navigate("RegisterScreen") },
                             onBack = { navController.navigateUp() },
                             onGoogleSignIn = {
-                                if(NetworkUtil.isNetworkAvailable(context)){
-                                    HasInternetAccess.hasInternetAccess(object :InternetAccessCallBack{
+                                if (NetworkUtil.isNetworkAvailable(context)) {
+                                    HasInternetAccess.hasInternetAccess(object :
+                                        InternetAccessCallBack {
                                         override fun onInternetAvailable() {
                                             stateViewModel.showDialog.value = true
                                             stateViewModel.dialogTittle.value = "Signing In..."
@@ -140,14 +146,19 @@ class MainActivity : ComponentActivity() {
 
                                         override fun onInternetNotAvailable() {
                                             CoroutineScope(Dispatchers.Main).launch {
-                                                Toast.makeText(context,"Unstable Internet",Toast.LENGTH_SHORT).show()
+                                                Toast.makeText(
+                                                    context,
+                                                    "Unstable Internet",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
                                             }
                                         }
                                     })
-                                } else Toast.makeText(context,"No Internet",Toast.LENGTH_SHORT).show()
+                                } else Toast.makeText(context, "No Internet", Toast.LENGTH_SHORT)
+                                    .show()
                             },
                             snackBarHostState = snackBarHostState
-                            )
+                        )
                     }
                     composable(
                         route = "RegisterScreen",
@@ -213,7 +224,8 @@ class MainActivity : ComponentActivity() {
         } catch (e: ApiException) {
             stateViewModel.showDialog.value = false
             stateViewModel.dialogTittle.value = ""
-            Toast.makeText(this,"${e.message.toString()} firebase exception", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "${e.message.toString()} firebase exception", Toast.LENGTH_SHORT)
+                .show()
             Log.d("firebase_exception", "API Exception")
         }
     }
@@ -232,7 +244,7 @@ class MainActivity : ComponentActivity() {
                     stateViewModel.showDialog.value = false
                     stateViewModel.dialogTittle.value = ""
                     databaseReference.child(userId.toString()).setValue(userDetails)
-                    Toast.makeText(context,"Authentication Successful",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Authentication Successful", Toast.LENGTH_SHORT).show()
                 } else {
                     stateViewModel.showDialog.value = false
                     stateViewModel.dialogTittle.value = ""

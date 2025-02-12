@@ -57,17 +57,8 @@ fun OnBoardingScreen(
         LocalContext.current
     ), stateViewModel: StateViewModel = viewModel()
 ) {
-    val systemUiController = rememberSystemUiController()
-    LaunchedEffect(Unit) {
-        systemUiController.setStatusBarColor(
-            color = Color(appThemeColor1.toArgb()),
-            darkIcons = true
-        )
-        systemUiController.setStatusBarColor(
-            color = Color(appThemeColor1.toArgb()),
-            darkIcons = true
-        )
-    }
+    //Setting the status bar color of the screen
+    StatusBarColor(color = Color(appThemeColor1.toArgb()), darkIcons = true)
     Column(
         modifier = Modifier
             .padding(WindowInsets.statusBars.asPaddingValues())
@@ -213,7 +204,6 @@ fun OnBoardingScreen(
                             }
                         }
                         val coroutineScope = rememberCoroutineScope()
-                        val context = LocalContext.current
                         ElevatedButton(
                             onClick = {
                                 pageCount+=1
