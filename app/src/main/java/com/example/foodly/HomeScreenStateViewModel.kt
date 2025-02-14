@@ -16,6 +16,9 @@ class HomeScreenStateViewModel() : ViewModel() {
     private val _timeTextSlogan = mutableStateOf("")
     val timeTextSlogan = _timeTextSlogan
 
+    private val _showProfileSideBar  = mutableStateOf(false)
+    val showProfileSideBar = _showProfileSideBar
+
 
 
 

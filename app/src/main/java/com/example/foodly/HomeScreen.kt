@@ -37,6 +37,10 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Recomposer
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,6 +56,7 @@ import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.foodly.ui.theme.appThemeColor1
 import com.example.foodly.ui.theme.appThemeColor2
@@ -61,10 +66,13 @@ import java.util.Calendar
 
 
 @Composable
-fun HomeScreen(homeScreenStateViewModel: HomeScreenStateViewModel = viewModel()) {
+fun HomeScreen(homeScreenStateViewModel: HomeScreenStateViewModel = viewModel(), profileIconClick:() -> Unit = {}) {
 
-    //Setting up the color of the status bar
-    StatusBarColor(color = Color(appThemeColor1.toArgb()), darkIcons = true)
+    if(homeScreenStateViewModel.showProfileSideBar.value){
+        StatusBarColor(color = Color(appThemeColor2.toArgb()), darkIcons = true)
+    } else{
+        StatusBarColor(color = Color(appThemeColor1.toArgb()), darkIcons = true)
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -135,7 +143,7 @@ fun HomeScreen(homeScreenStateViewModel: HomeScreenStateViewModel = viewModel())
                                     }
 
                                     else -> {
-                                        //Navigate to Accounts
+                                        profileIconClick()
                                     }
                                 }
                             }
