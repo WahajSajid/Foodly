@@ -23,6 +23,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
+import com.example.foodly.AccountCreation.LogInScreen
+import com.example.foodly.AccountCreation.RegisterScreen
+import com.example.foodly.OnBoardingScreen.OnBoardingScreen
+import com.example.foodly.OnBoardingScreen.WelcomeScreen
 import com.example.foodly.ui.theme.FoodlyTheme
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable

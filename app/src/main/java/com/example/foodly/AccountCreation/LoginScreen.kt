@@ -1,4 +1,4 @@
-package com.example.foodly
+package com.example.foodly.AccountCreation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -38,6 +38,12 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.foodly.R
+import com.example.foodly.StateViewModel
+import com.example.foodly.StatusBarColor
+import com.example.foodly.TextInputField
+import com.example.foodly.TopBar
+import com.example.foodly.showSnackBar
 import com.example.foodly.ui.theme.appThemeColor1
 import com.example.foodly.ui.theme.appThemeColor2
 

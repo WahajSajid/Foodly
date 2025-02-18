@@ -18,13 +18,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
@@ -37,26 +35,19 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.Recomposer
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.foodly.ui.theme.appThemeColor1
 import com.example.foodly.ui.theme.appThemeColor2
@@ -66,11 +57,16 @@ import java.util.Calendar
 
 
 @Composable
-fun HomeScreen(homeScreenStateViewModel: HomeScreenStateViewModel = viewModel(), profileIconClick:() -> Unit = {}) {
+fun HomeScreen(
+    homeScreenStateViewModel: HomeScreenStateViewModel = viewModel(),
+    profileIconClick: () -> Unit = {},
+    notificationIconClick: () -> Unit = {},
+    cartIconClick: () -> Unit = {}
+) {
 
-    if(homeScreenStateViewModel.showProfileSideBar.value){
+    if (homeScreenStateViewModel.showProfileSideBar.value) {
         StatusBarColor(color = Color(appThemeColor2.toArgb()), darkIcons = true)
-    } else{
+    } else {
         StatusBarColor(color = Color(appThemeColor1.toArgb()), darkIcons = true)
     }
     Box(
@@ -135,11 +131,11 @@ fun HomeScreen(homeScreenStateViewModel: HomeScreenStateViewModel = viewModel(),
                             onClick = {
                                 when (i) {
                                     0 -> {
-                                        //Navigate to Cart screen
+                                        cartIconClick()
                                     }
 
                                     1 -> {
-                                        //Navigate to Notifications
+                                       notificationIconClick()
                                     }
 
                                     else -> {

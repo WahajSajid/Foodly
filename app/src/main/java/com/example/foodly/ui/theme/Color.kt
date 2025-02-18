@@ -12,6 +12,11 @@ val appThemeColor1 = Color(0xFFFFC107)
 val appThemeColor2 = Color(0xFFD83C3C)
 val textFieldColor = Color(0xFFF6E2B1)
 val dim_appThemeColor2 = Color(0xFFE2A7A7)
+val dimOrangeColor = Color(0xFFFFDECF)
+val checkOutButtonColor = Color(0xFFF5CB58)
+
+
+
 
 val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)

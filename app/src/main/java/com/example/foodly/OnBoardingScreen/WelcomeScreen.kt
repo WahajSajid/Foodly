@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package com.example.foodly
+package com.example.foodly.OnBoardingScreen
 
 import android.content.Context
 import androidx.compose.foundation.Image
@@ -33,6 +33,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.foodly.AppNameHeading
+import com.example.foodly.R
+import com.example.foodly.StateViewModel
 import com.example.foodly.ui.theme.appThemeColor1
 import com.example.foodly.ui.theme.appThemeColor2
 import com.google.accompanist.systemuicontroller.rememberSystemUiController

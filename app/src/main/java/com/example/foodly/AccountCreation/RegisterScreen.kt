@@ -1,8 +1,7 @@
 
 
-package com.example.foodly
+package com.example.foodly.AccountCreation
 
-import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -44,6 +43,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.foodly.HasInternetAccess
+import com.example.foodly.InternetAccessCallBack
+import com.example.foodly.NetworkUtil
+import com.example.foodly.ProgressIndicatorDialog
+import com.example.foodly.R
+import com.example.foodly.StateViewModel
+import com.example.foodly.StatusBarColor
+import com.example.foodly.TextInputField
+import com.example.foodly.TopBar
+import com.example.foodly.showSnackBar
 import com.example.foodly.ui.theme.FoodlyTheme
 import com.example.foodly.ui.theme.appThemeColor1
 import com.example.foodly.ui.theme.appThemeColor2
@@ -232,8 +241,13 @@ fun RegisterScreen(
                                                     stateViewModel.showDialog.value = false
                                                     stateViewModel.dialogTittle.value = ""
                                                     stateViewModel.showSnackBar.value = true
-                                                    stateViewModel.isOperationSuccessful.value = false
-                                                    showSnackBar(hostState= snackBarHostState,stateViewModel = stateViewModel,"Unstable Internet")
+                                                    stateViewModel.isOperationSuccessful.value =
+                                                        false
+                                                    showSnackBar(
+                                                        hostState = snackBarHostState,
+                                                        stateViewModel = stateViewModel,
+                                                        "Unstable Internet"
+                                                    )
 
                                                 }
 
