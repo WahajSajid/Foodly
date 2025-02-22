@@ -43,9 +43,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.foodly.HasInternetAccess
-import com.example.foodly.InternetAccessCallBack
-import com.example.foodly.NetworkUtil
+import com.example.foodly.NetworkPermissions.HasInternetAccess
+import com.example.foodly.NetworkPermissions.InternetAccessCallBack
+import com.example.foodly.NetworkPermissions.NetworkUtil
 import com.example.foodly.ProgressIndicatorDialog
 import com.example.foodly.R
 import com.example.foodly.StateViewModel
@@ -72,9 +72,12 @@ fun RegisterScreen(
     navController: NavController = NavController(LocalContext.current),
     database: FirebaseDatabase = FirebaseDatabase.getInstance(),
     authentication: FirebaseAuth = FirebaseAuth.getInstance(),
-    snackBarHostState:SnackbarHostState
+    snackBarHostState:SnackbarHostState,
 ) {
     val context = LocalContext.current
+    if(stateViewModel.authenticationSuccessful.value){
+        navController.popBackStack()
+    }
     StatusBarColor(color = Color(appThemeColor1.toArgb()), darkIcons = true)
     Scaffold(snackbarHost = {
         FoodlyTheme {
@@ -338,7 +341,8 @@ private fun registerUserWithEmailAndPassword(
             stateViewModel.isOperationSuccessful.value = true
             showSnackBar(hostState = snackBarHostState,stateViewModel = stateViewModel, message = "Registration Successful")
             CoroutineScope(Dispatchers.Main).launch {
-                navController.navigate("LoginScreen")
+                navController.popBackStack()
+                navController.navigate("LogInScreen")
             }
         }
         .addOnFailureListener { error ->
@@ -352,6 +356,6 @@ private fun registerUserWithEmailAndPassword(
 
 
 //Function to check input fields are empty or not
-fun inputFieldsEmpty(stateViewModel: StateViewModel): Boolean {
+private fun inputFieldsEmpty(stateViewModel: StateViewModel): Boolean {
     return (stateViewModel.name.value == "" || stateViewModel.email.value == "" || stateViewModel.password.value == "")
 }

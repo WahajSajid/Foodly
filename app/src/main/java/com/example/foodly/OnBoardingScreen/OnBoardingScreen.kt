@@ -2,6 +2,11 @@
 
 package com.example.foodly.OnBoardingScreen
 
+import android.annotation.SuppressLint
+import android.content.SharedPreferences
+import android.util.Log
+import android.widget.Toast
+import androidx.activity.ComponentActivity.MODE_PRIVATE
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -26,6 +31,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -34,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -52,12 +59,17 @@ import com.example.foodly.ui.theme.appThemeColor2
 import com.example.foodly.ui.theme.dim_appThemeColor2
 import kotlinx.coroutines.launch
 
+@SuppressLint("ApplySharedPref")
 @Composable
 fun OnBoardingScreen(
-    onSkip: () -> Unit = {}, navController: NavController = NavController(
+    onSkip: () -> Unit = {},
+    navController: NavController = NavController(
         LocalContext.current
-    ), stateViewModel: StateViewModel = viewModel()
+    ),
+    stateViewModel: StateViewModel = viewModel(),
+    sharedPreferences: SharedPreferences
 ) {
+    val context = LocalContext.current
     //Setting the status bar color of the screen
     StatusBarColor(color = Color(appThemeColor1.toArgb()), darkIcons = true)
     Column(
@@ -119,6 +131,7 @@ fun OnBoardingScreen(
                     Image(
                         painter = painterResource(onBoardingImages.value[page]),
                         contentDescription = "On Boarding Image",
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -207,17 +220,37 @@ fun OnBoardingScreen(
                         val coroutineScope = rememberCoroutineScope()
                         ElevatedButton(
                             onClick = {
-                                pageCount+=1
-                                if(pageCount == 4){
-                                    if(stateViewModel.welcomeScreenButtonClicked.value == "SignIn") navController.navigate("LoginScreen")
+                                sharedPreferences.edit()
+                                    .putBoolean("gone_through_onBoardingScreen", true)
+                                    .apply()
+                                pageCount += 1
+                                if (pageCount == 4) {
+                                    if (stateViewModel.welcomeScreenButtonClicked.value == "SignIn") navController.navigate(
+                                        "LoginScreen"
+                                    )
                                     else navController.navigate("RegisterScreen")
-                                } else{
+                                } else {
                                     val nextPage =
                                         (pagerState.currentPage + 1).coerceAtMost(pagerState.pageCount)
                                     coroutineScope.launch {
-                                        if(nextPage == 3){
-                                            if(stateViewModel.welcomeScreenButtonClicked.value == "SignIn") navController.navigate("LoginScreen")
-                                            else navController.navigate("RegisterScreen")
+                                        if (nextPage == 3) {
+                                            when (stateViewModel.welcomeScreenButtonClicked.value) {
+                                                "SignIn" -> {
+                                                    navController.navigate("LoginScreen")
+                                                }
+
+                                                "Skip Login" -> {
+                                                    navController.navigate("Main Screen") {
+                                                        popUpTo("SplashScreen") {
+                                                            inclusive = true
+                                                        }
+                                                    }
+                                                }
+
+                                                else -> {
+                                                    navController.navigate("RegisterScreen")
+                                                }
+                                            }
                                         } else pagerState.animateScrollToPage(nextPage)
                                     }
                                 }
@@ -238,8 +271,8 @@ fun OnBoardingScreen(
 }
 
 
-@Preview(showSystemUi = true)
-@Composable
-private fun Preview() {
-    OnBoardingScreen()
-}
+//@Preview(showSystemUi = true)
+//@Composable
+//private fun Preview() {
+//    OnBoardingScreen()
+//}

@@ -46,7 +46,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.foodly.HomeScreenStateViewModel
+import com.example.foodly.MainScreen.HomeScreenStateViewModel
 import com.example.foodly.R
 import com.example.foodly.ui.theme.appThemeColor2
 import com.example.foodly.ui.theme.checkOutButtonColor

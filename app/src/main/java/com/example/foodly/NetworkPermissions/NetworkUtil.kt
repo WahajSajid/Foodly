@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package com.example.foodly
+package com.example.foodly.NetworkPermissions
 
 import android.content.Context
 import android.net.ConnectivityManager

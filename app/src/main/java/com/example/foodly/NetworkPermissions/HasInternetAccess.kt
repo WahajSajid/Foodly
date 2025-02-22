@@ -1,4 +1,4 @@
-package com.example.foodly
+package com.example.foodly.NetworkPermissions
 
 import okhttp3.Call
 import okhttp3.Callback
@@ -14,7 +14,7 @@ interface InternetAccessCallBack{
 }
 
 object HasInternetAccess {
-    fun hasInternetAccess(callback:InternetAccessCallBack){
+    fun hasInternetAccess(callback: InternetAccessCallBack){
         val client = OkHttpClient.Builder()
             .readTimeout(10, TimeUnit.SECONDS)
             .connectTimeout(10,TimeUnit.SECONDS)

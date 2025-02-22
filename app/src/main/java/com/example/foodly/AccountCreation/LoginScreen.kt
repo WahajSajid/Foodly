@@ -1,5 +1,8 @@
 package com.example.foodly.AccountCreation
 
+import android.content.Context
+import android.content.SharedPreferences
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -30,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -38,6 +42,10 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.foodly.NetworkPermissions.HasInternetAccess
+import com.example.foodly.NetworkPermissions.InternetAccessCallBack
+import com.example.foodly.NetworkPermissions.NetworkUtil
 import com.example.foodly.R
 import com.example.foodly.StateViewModel
 import com.example.foodly.StatusBarColor
@@ -46,6 +54,11 @@ import com.example.foodly.TopBar
 import com.example.foodly.showSnackBar
 import com.example.foodly.ui.theme.appThemeColor1
 import com.example.foodly.ui.theme.appThemeColor2
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import okhttp3.Authenticator
 
 @Composable
 fun LogInScreen(
@@ -54,8 +67,15 @@ fun LogInScreen(
     onBack: () -> Unit = {},
     onGoogleSignIn: () -> Unit = {},
     onFacebookSignIn: () -> Unit = {},
-    snackBarHostState:SnackbarHostState
+    snackBarHostState: SnackbarHostState,
+    navController: NavController,
+    authenticator: FirebaseAuth,
+    sharedPreferences: SharedPreferences
 ) {
+    if (stateViewModel.authenticationSuccessful.value) {
+        navController.popBackStack()
+    }
+
     StatusBarColor(color = Color(appThemeColor1.toArgb()), darkIcons = true)
     Box(
         modifier = Modifier
@@ -66,8 +86,8 @@ fun LogInScreen(
 
         TopBar(heading = "Log In", onBack = onBack)
         //Showing SnackBar when the registration is successful
-        if(stateViewModel.isOperationSuccessful.value){
-            showSnackBar(hostState = snackBarHostState,stateViewModel,"Registration Successful")
+        if (stateViewModel.isOperationSuccessful.value) {
+            showSnackBar(hostState = snackBarHostState, stateViewModel, "Registration Successful")
         }
         ElevatedCard(
             modifier = Modifier
@@ -157,8 +177,18 @@ fun LogInScreen(
                         onValueChange = { stateViewModel.password.value = it },
                         value = stateViewModel.password.value
                     )
+                    val context = LocalContext.current
                     ElevatedButton(
-                        onClick = {}, colors = ButtonDefaults.elevatedButtonColors(
+                        onClick = {
+                            loginUser(
+                                stateViewModel = stateViewModel,
+                                snackBarHostState = snackBarHostState,
+                                context = context,
+                                firebaseAuth = authenticator,
+                                sharedPreferences = sharedPreferences,
+                                navController = navController
+                            )
+                        }, colors = ButtonDefaults.elevatedButtonColors(
                             appThemeColor2
                         ),
                         modifier = Modifier
@@ -207,4 +237,93 @@ fun LogInScreen(
             }
         }
     }
+}
+
+
+//Function to login user
+private fun loginUser(
+    stateViewModel: StateViewModel,
+    snackBarHostState: SnackbarHostState,
+    context: Context,
+    firebaseAuth: FirebaseAuth,
+    sharedPreferences: SharedPreferences,
+    navController: NavController
+) {
+    if (inputFieldsEmpty(stateViewModel = stateViewModel)) {
+        stateViewModel.showSnackBar.value = true
+        showSnackBar(
+            hostState = snackBarHostState,
+            stateViewModel = stateViewModel,
+            message = "Input all fields first"
+        )
+    } else {
+        if (stateViewModel.email.value.contains("@gmail.com")) {
+            if (NetworkUtil.isNetworkAvailable(context)) {
+                //Showing the progress dialog when the button clicked and the internet is available
+                stateViewModel.showDialog.value = true
+                stateViewModel.dialogTittle.value = "Signing In..."
+                HasInternetAccess.hasInternetAccess(object :
+                    InternetAccessCallBack {
+                    override fun onInternetAvailable() {
+                        //Login User
+                        firebaseAuth.signInWithEmailAndPassword(
+                            stateViewModel.email.value,
+                            stateViewModel.password.value
+                        )
+                            .addOnSuccessListener {
+                                sharedPreferences.edit()
+                                    .putString("name", stateViewModel.name.value).apply()
+                                sharedPreferences.edit()
+                                    .putString("email", stateViewModel.email.value).apply()
+                                sharedPreferences.edit().putBoolean("user_registered", true).apply()
+                                stateViewModel.signInSuccessful.value = true
+                                stateViewModel.showDialog.value = false
+                                stateViewModel.dialogTittle.value = ""
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    navController.navigate("Main Screen") {
+                                        popUpTo("SplashScreen") { inclusive = true }
+                                    }
+                                }
+                            }
+                    }
+
+                    override fun onInternetNotAvailable() {
+                        stateViewModel.showDialog.value = false
+                        stateViewModel.dialogTittle.value = ""
+                        stateViewModel.showSnackBar.value = true
+                        stateViewModel.isOperationSuccessful.value =
+                            false
+                        showSnackBar(
+                            hostState = snackBarHostState,
+                            stateViewModel = stateViewModel,
+                            "Unstable Internet"
+                        )
+
+                    }
+
+                })
+            } else {
+                stateViewModel.showSnackBar.value = true
+                stateViewModel.isOperationSuccessful.value = false
+                showSnackBar(
+                    hostState = snackBarHostState,
+                    stateViewModel = stateViewModel,
+                    message = "No Internet"
+                )
+            }
+        } else {
+            stateViewModel.showSnackBar.value = true
+            stateViewModel.isOperationSuccessful.value = false
+            showSnackBar(
+                hostState = snackBarHostState,
+                stateViewModel = stateViewModel,
+                message = "Invalid Email"
+            )
+        }
+    }
+}
+
+//Function to check input fields are empty or not
+private fun inputFieldsEmpty(stateViewModel: StateViewModel): Boolean {
+    return (stateViewModel.email.value == "" || stateViewModel.password.value == "")
 }

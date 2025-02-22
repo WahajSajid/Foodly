@@ -1,8 +1,5 @@
-@file:Suppress("DEPRECATION")
-
 package com.example.foodly.OnBoardingScreen
 
-import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,13 +26,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import com.example.foodly.AppNameHeading
 import com.example.foodly.R
-import com.example.foodly.StateViewModel
 import com.example.foodly.ui.theme.appThemeColor1
 import com.example.foodly.ui.theme.appThemeColor2
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -44,18 +37,18 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 fun WelcomeScreen(
     onSignIn: () -> Unit = {},
     onSignUp: () -> Unit = {},
-    stateViewModel: StateViewModel = StateViewModel(),
-    context: Context = LocalContext.current,
-    navController: NavController = NavController(LocalContext.current)
+    onNotNow: () -> Unit = {}
 ) {
-
     val systemUiController = rememberSystemUiController()
     LaunchedEffect(Unit) {
         systemUiController.setStatusBarColor(
             color = Color(appThemeColor1.toArgb()),
             darkIcons = true
         )
-        systemUiController.setStatusBarColor(color = Color(appThemeColor2.toArgb()), darkIcons = true)
+        systemUiController.setStatusBarColor(
+            color = Color(appThemeColor2.toArgb()),
+            darkIcons = true
+        )
     }
     Column(
         modifier = Modifier
@@ -72,8 +65,9 @@ fun WelcomeScreen(
             contentDescription = "app icon",
             modifier = Modifier.size(100.dp)
         )
-        AppNameHeading(
-            "Foodly.", textStyle = TextStyle(
+        Text(
+            text = "Foodly.",
+            style = TextStyle(
                 fontWeight = FontWeight.Bold,
                 fontSize = 45.sp,
                 color = Color(appThemeColor1.toArgb()),
@@ -86,10 +80,9 @@ fun WelcomeScreen(
             style = TextStyle(color = Color.White)
         )
         Text(
-            text = "Go ahead, and explore more. ",
+            text = "Go ahead, and explore more.",
             style = TextStyle(color = Color.White)
         )
-        //LogIn Button
         ElevatedButton(
             onClick = onSignIn,
             modifier = Modifier
@@ -102,7 +95,6 @@ fun WelcomeScreen(
                 style = TextStyle(color = Color(appThemeColor2.toArgb()), fontSize = 20.sp)
             )
         }
-        //SignUp Button
         ElevatedButton(
             onClick = onSignUp,
             modifier = Modifier
@@ -115,11 +107,21 @@ fun WelcomeScreen(
                 style = TextStyle(color = Color(appThemeColor2.toArgb()), fontSize = 20.sp)
             )
         }
+        ElevatedButton(
+            onClick = onNotNow,
+            modifier = Modifier
+                .width(150.dp)
+                .padding(top = 5.dp),
+            colors = ButtonDefaults.elevatedButtonColors(
+                containerColor = Color.Transparent, contentColor = Color(
+                    appThemeColor1.toArgb()
+                )
+            ),
+        ) {
+            Text(
+                text = "Not Now",
+                style = TextStyle(color = Color(appThemeColor1.toArgb()), fontSize = 20.sp)
+            )
+        }
     }
-}
-
-@Preview(showSystemUi = true)
-@Composable
-private fun Preview() {
-    WelcomeScreen(onSignUp = {}, onSignIn = {}, stateViewModel = StateViewModel())
 }

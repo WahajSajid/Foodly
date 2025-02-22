@@ -1,9 +1,7 @@
-package com.example.foodly
+package com.example.foodly.MainScreen
 
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 
 class HomeScreenStateViewModel() : ViewModel() {

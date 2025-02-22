@@ -38,6 +38,16 @@ class StateViewModel:ViewModel() {
     private val _isOperationSuccessful = mutableStateOf(false)
     var isOperationSuccessful = _isOperationSuccessful
 
+
+    private val _authenticationSuccessful = mutableStateOf(false)
+    val authenticationSuccessful = _authenticationSuccessful
+
+   private val _signInSuccessful = mutableStateOf(false)
+    val signInSuccessful = _signInSuccessful
+
+    var splashScreenShowed = mutableStateOf(false)
+
+
     //focus requester
     val focusRequester1 = FocusRequester()
     val focusRequester2 = FocusRequester()

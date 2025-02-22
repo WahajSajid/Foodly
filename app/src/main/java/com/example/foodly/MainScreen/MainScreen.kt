@@ -1,4 +1,4 @@
-package com.example.foodly
+package com.example.foodly.MainScreen
 
 
 import android.annotation.SuppressLint
@@ -43,6 +43,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.foodly.HomeSideBars.CartSideBar
 import com.example.foodly.HomeSideBars.NotificationsSideBar
 import com.example.foodly.HomeSideBars.ProfileSideBar
+import com.example.foodly.StatusBarColor
 import com.example.foodly.ui.theme.appThemeColor1
 import com.example.foodly.ui.theme.appThemeColor2
 
