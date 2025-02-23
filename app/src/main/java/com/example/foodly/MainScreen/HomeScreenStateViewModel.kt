@@ -2,7 +2,9 @@ package com.example.foodly.MainScreen
 
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
+import com.example.foodly.R
 
 class HomeScreenStateViewModel() : ViewModel() {
 
@@ -26,6 +28,21 @@ class HomeScreenStateViewModel() : ViewModel() {
     val showCartSideBar = _showCartSideBar
 
 
+    private val _recommendedText = mutableStateOf("Recommended")
+    val recommendedText = _recommendedText
+
+    private val _searchText = mutableStateOf("Search")
+    val searchText = _searchText
+
+    private val _bestSellerText = mutableStateOf("Best Seller")
+    val bestSellerText = _bestSellerText
+
+    private val _viewAllText = mutableStateOf("View All")
+    val viewAllText = _viewAllText
+
+    private val _experienceNewDishText = mutableStateOf("Experience Our\n" +
+            "delicious new dish")
+    val experienceNewDishText = _experienceNewDishText
 
 
 
@@ -49,18 +66,11 @@ class HomeScreenStateViewModel() : ViewModel() {
     val total = _total
 
 
+    private val _menuItems = loadMenuItemsData().toMutableStateList()
+    val menuItems = _menuItems
 
 
-//    private var menuNames = listOf("Snacks", "Meal", "Vegan", "Dessert", "Drinks")
-//    private var menuIcons: List<Int> = listOf(
-//        R.drawable.snacks,
-//        R.drawable.meal,
-//        R.drawable.vegan,
-//        R.drawable.dessert,
-//        R.drawable.drinks
-//    )
-//
-//    private fun setMenuItemsData() = List(5) { i -> MenuItems(menuNames[i], menuIcons[i]) }
-//    data class MenuItems(var menuName: String, var menuIcon: Int)
+    private val _bestSellerItems = loadBestSellerData().toMutableStateList()
+    val bestSellerItem = _bestSellerItems
 
 }

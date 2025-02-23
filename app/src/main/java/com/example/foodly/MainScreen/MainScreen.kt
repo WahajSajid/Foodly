@@ -69,6 +69,7 @@ fun MainScreen(homeScreenStateViewModel: HomeScreenStateViewModel = viewModel())
             ) {
                 composable(BottomNavItem.Home.route) {
                     HomeScreen(
+                        homeScreenStateViewModel = homeScreenStateViewModel,
                         profileIconClick = {
                             homeScreenStateViewModel.showProfileSideBar.value = true
                         },
@@ -191,8 +192,7 @@ fun BottomNavBar(navController: NavHostController) {
     }
 }
 
-
-@Preview()
+@Preview(showSystemUi = true, name = "MainScreen")
 @Composable
 private fun Preview() {
     MainScreen()

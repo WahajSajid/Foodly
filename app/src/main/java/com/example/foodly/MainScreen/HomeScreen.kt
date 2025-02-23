@@ -1,6 +1,8 @@
 package com.example.foodly.MainScreen
 
+import android.os.Parcelable
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +37,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,6 +52,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.versionedparcelable.ParcelField
 import com.example.foodly.R
 import com.example.foodly.StatusBarColor
 import com.example.foodly.ui.theme.appThemeColor1
@@ -65,11 +69,17 @@ fun HomeScreen(
     notificationIconClick: () -> Unit = {},
     cartIconClick: () -> Unit = {}
 ) {
-
+    val scrollState = rememberSaveable(saver = ScrollState.Saver) { ScrollState(0) }
     if (homeScreenStateViewModel.showProfileSideBar.value) {
-        StatusBarColor(color = Color(appThemeColor2.toArgb()), darkIcons = true)
+        StatusBarColor(
+            color = Color(appThemeColor2.toArgb()),
+            darkIcons = true
+        )
     } else {
-        StatusBarColor(color = Color(appThemeColor1.toArgb()), darkIcons = true)
+        StatusBarColor(
+            color = Color(appThemeColor1.toArgb()),
+            darkIcons = true
+        )
     }
     Box(
         modifier = Modifier
@@ -98,7 +108,12 @@ fun HomeScreen(
                     onValueChange = {
                         homeScreenStateViewModel.searchTextFieldState.value = it
                     },
-                    placeholder = { Text(text = "Search", color = Color.Gray) },
+                    placeholder = {
+                        Text(
+                            text = homeScreenStateViewModel.searchText.value,
+                            color = Color.Gray
+                        )
+                    },
                     colors = TextFieldDefaults.colors(
                         unfocusedContainerColor = Color.White, // Ensure transparency
                         focusedContainerColor = Color.White,
@@ -115,7 +130,7 @@ fun HomeScreen(
                             }
                         ) {
                             Image(
-                                painter = painterResource(R.drawable.filter_icon),
+                                painter = painterResource(rememberSaveable { R.drawable.filter_icon }),
                                 contentDescription = "Filter Icon",
                                 modifier = Modifier
                                     .size(40.dp)
@@ -137,7 +152,7 @@ fun HomeScreen(
                                     }
 
                                     1 -> {
-                                       notificationIconClick()
+                                        notificationIconClick()
                                     }
 
                                     else -> {
@@ -146,12 +161,19 @@ fun HomeScreen(
                                 }
                             }
                         ) {
+
+                            //Side bar icons
+                            val sideBarIcons = rememberSaveable {
+                                listOf(
+                                    R.drawable.cart,
+                                    R.drawable.notifications,
+                                    R.drawable.accounts
+                                )
+                            }
                             Image(
-                                painter = when (i) {
-                                    0 -> painterResource(R.drawable.cart)
-                                    1 -> painterResource(R.drawable.notifications)
-                                    else -> painterResource(R.drawable.accounts)
-                                }, contentDescription = null, Modifier.size(45.dp)
+                                painter = painterResource(sideBarIcons[i]),
+                                contentDescription = null,
+                                Modifier.size(45.dp)
                             )
                         }
                     }
@@ -218,13 +240,14 @@ fun HomeScreen(
         ) {
             Column(
                 modifier = Modifier
-                    .verticalScroll(rememberScrollState())
+                    .verticalScroll(scrollState)
                     .wrapContentSize()
             ) {
                 MenuItemRow(
                     modifier = Modifier
                         .padding(5.dp)
-                        .fillMaxWidth()
+                        .fillMaxWidth(),
+                    homeScreenStateViewModel = homeScreenStateViewModel
                 )
 
                 Row(
@@ -233,7 +256,10 @@ fun HomeScreen(
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Image(painter = painterResource(R.drawable.line_1), contentDescription = null)
+                    Image(
+                        painter = painterResource(rememberSaveable { R.drawable.line_1 }),
+                        contentDescription = null
+                    )
                 }
 
                 Row(
@@ -242,7 +268,7 @@ fun HomeScreen(
                         .fillMaxWidth()
                 ) {
                     Text(
-                        text = "Best Seller",
+                        text = homeScreenStateViewModel.bestSellerText.value,
                         style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp),
                     )
 
@@ -257,12 +283,12 @@ fun HomeScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "View All",
+                            text = homeScreenStateViewModel.viewAllText.value,
                             style = TextStyle(color = Color(appThemeColor2.toArgb())),
                             modifier = Modifier.padding(top = 2.dp)
                         )
                         Image(
-                            painter = painterResource(R.drawable.baseline_arrow_forward_ios_24),
+                            painter = painterResource(rememberSaveable { R.drawable.baseline_arrow_forward_ios_24 }),
                             contentDescription = null,
                             modifier = Modifier.padding(start = 5.dp, top = 4.dp)
                         )
@@ -271,7 +297,8 @@ fun HomeScreen(
                 BestSellerItemsComposable(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 10.dp, start = 15.dp, end = 15.dp)
+                        .padding(top = 10.dp, start = 15.dp, end = 15.dp),
+                    homeScreenStateViewModel = homeScreenStateViewModel
                 )
 
                 //Temporary data for advertising banner, replace with the actual data
@@ -342,7 +369,7 @@ fun HomeScreen(
                                     horizontalAlignment = Alignment.End
                                 ) {
                                     Image(
-                                        painter = painterResource(R.drawable.top_right_circle),
+                                        painter = painterResource(rememberSaveable { R.drawable.top_right_circle }),
                                         contentDescription = null
                                     )
                                 }
@@ -354,7 +381,7 @@ fun HomeScreen(
                                     horizontalAlignment = Alignment.Start
                                 ) {
                                     Image(
-                                        painter = painterResource(R.drawable.bottom_left_circle),
+                                        painter = painterResource(rememberSaveable{ R.drawable.bottom_left_circle }),
                                         contentDescription = null
                                     )
                                 }
@@ -365,7 +392,7 @@ fun HomeScreen(
                                     verticalArrangement = Arrangement.Center,
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
-                                    Text(text = "Experience Our\ndelicious new dish")
+                                    Text(text = homeScreenStateViewModel.experienceNewDishText.value)
                                     Text(
                                         text = advertisingText[page],
                                         style = TextStyle(
@@ -418,14 +445,15 @@ fun HomeScreen(
 
                 Text(
                     modifier = Modifier.padding(top = 15.dp, start = 20.dp),
-                    text = "Recommended",
+                    text = homeScreenStateViewModel.recommendedText.value,
                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp),
                 )
 
                 //Demo data, replace with the original data
-                val recommendedItemsImages = listOf(R.drawable.burger, R.drawable.roll)
-                val ratings = listOf("5.0", "4.5")
-                val prices = listOf("150", "300")
+                val recommendedItemsImages =
+                    rememberSaveable { listOf(R.drawable.burger, R.drawable.roll) }
+                val ratings = rememberSaveable { listOf("5.0", "4.5") }
+                val prices = rememberSaveable { listOf("150", "300") }
                 Row(
                     modifier = Modifier
                         .padding(20.dp)
@@ -451,10 +479,7 @@ fun HomeScreen(
                         ) {
                             Box {
                                 Image(
-                                    painter = when (i) {
-                                        0 -> painterResource(recommendedItemsImages[0])
-                                        else -> painterResource(recommendedItemsImages[1])
-                                    }, contentDescription = null,
+                                    painter = painterResource(recommendedItemsImages[i]), contentDescription = null,
                                     contentScale = ContentScale.Crop,
                                     modifier = Modifier.fillMaxSize()
                                 )
@@ -481,10 +506,7 @@ fun HomeScreen(
                                             horizontalArrangement = Arrangement.Center
                                         ) {
                                             Text(
-                                                text = when (i) {
-                                                    0 -> ratings[0]
-                                                    else -> ratings[1]
-                                                }, color = Color.Black, fontSize = 12.sp
+                                                text = ratings[i], color = Color.Black, fontSize = 12.sp
                                             )
                                             Text("⭐", fontSize = 10.sp)
                                         }
@@ -519,13 +541,7 @@ fun HomeScreen(
                                             verticalArrangement = Arrangement.Center
                                         ) {
                                             Text(
-                                                text = when (i) {
-                                                    0 -> {
-                                                        "RS. " + prices[0]
-                                                    }
-
-                                                    else -> "RS. " + prices[1]
-                                                },
+                                                text = "RS. " + prices[i],
                                                 style = TextStyle(
                                                     fontSize = 8.sp,
                                                     fontWeight = FontWeight.Light
@@ -552,12 +568,11 @@ fun HomeScreen(
 //Lazy Row for the menu
 @Composable
 fun MenuItemRow(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    homeScreenStateViewModel: HomeScreenStateViewModel
 ) {
-    val menuItems = loadMenuItemsData()
-
     LazyRow(modifier = modifier) {
-        itemsIndexed(menuItems) { index, menu ->
+        itemsIndexed(homeScreenStateViewModel.menuItems) { index, menu ->
             MenuItemComposable(menuName = menu.menuName, menuIcon = menu.menuIcon, onClick = {
                 when (index) {
                     0 -> { /* Navigate to Snacks */
@@ -583,10 +598,9 @@ fun MenuItemRow(
 
 //Lazy Column for the Best Seller items
 @Composable
-fun BestSellerItemsComposable(modifier: Modifier = Modifier) {
-    val items = loadBestSellerData()
+fun BestSellerItemsComposable(modifier: Modifier = Modifier, homeScreenStateViewModel: HomeScreenStateViewModel) {
     LazyRow(modifier = modifier) {
-        itemsIndexed(items) { index, item ->
+        itemsIndexed(homeScreenStateViewModel.bestSellerItem) { index, item ->
             BestSellerItemComposable(itemImage = item.itemImage, price = item.itemPrice,
                 onClick = {
                     //Navigate to order
@@ -683,39 +697,41 @@ fun BestSellerItemComposable(
 /* Below are the function that will load the data */
 
 //Function to load data
-@Composable
-private fun loadMenuItemsData(): List<MenuItem> {
+fun loadMenuItemsData(): List<MenuItem> {
+    val menuItems = mutableListOf<MenuItem>()
+    //Dummy data replace with the original data
     val menuNames = listOf("Snacks", "Meal", "Vegan", "Dessert", "Drinks")
-    val menuIcons = listOf(
-        R.drawable.snacks,
-        R.drawable.meal,
-        R.drawable.vegan,
-        R.drawable.dessert,
-        R.drawable.drinks
-    )
-
-    return rememberSaveable {
-        menuNames.zip(menuIcons) { name, icon -> MenuItem(name, icon) }
+    val menuIcons =
+        listOf(
+            R.drawable.snacks,
+            R.drawable.meal,
+            R.drawable.vegan,
+            R.drawable.dessert,
+            R.drawable.drinks
+        )
+    for (data in menuNames.withIndex()) {
+        menuItems.add(MenuItem(menuName = menuNames[data.index], menuIcon = menuIcons[data.index]))
     }
+    return menuItems
 }
 
 //Function that will load the data of best seller items
-@Composable
 fun loadBestSellerData(): MutableList<BestSellerItem> {
     val bestSellerItems = mutableListOf<BestSellerItem>()
     //List of images, replace with the original data
-    val itemImages = listOf(
-        R.drawable.image1,
-        R.drawable.image2,
-        R.drawable.image3,
-        R.drawable.image4
-    )
+    val itemImages =
+        listOf(
+            R.drawable.image1,
+            R.drawable.image2,
+            R.drawable.image3,
+            R.drawable.image4
+        )
     //List of item prices, replace with original data
     val itemPrices = listOf(400, 500, 900, 1200)
     for (i in 0..3) {
         bestSellerItems.add(BestSellerItem(itemImage = itemImages[i], itemPrice = itemPrices[i]))
     }
-    return rememberSaveable { bestSellerItems }
+    return bestSellerItems
 }
 
 
@@ -731,7 +747,7 @@ data class BestSellerItem(var itemImage: Int, var itemPrice: Int)
 //}
 
 
-@Preview(showSystemUi = true, name = "Home Screen")
+@Preview(showSystemUi = true, name = "HomeScreen")
 @Composable
 private fun Preview() {
     HomeScreen()
