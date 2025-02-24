@@ -19,10 +19,10 @@
       <SelectionState runConfigName="Preview (1)">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="Preview - Home Screen">
+      <SelectionState runConfigName="Preview - MainScreen">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="Preview - Main Screen">
+      <SelectionState runConfigName="Preview - HomeScreen">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
