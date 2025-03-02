@@ -1,8 +1,14 @@
+@file:OptIn(ExperimentalAnimationApi::class)
+@file:Suppress("DEPRECATION")
+
 package com.example.foodly.MainScreen
 
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
@@ -31,12 +37,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -46,6 +52,7 @@ import com.example.foodly.HomeSideBars.ProfileSideBar
 import com.example.foodly.StatusBarColor
 import com.example.foodly.ui.theme.appThemeColor1
 import com.example.foodly.ui.theme.appThemeColor2
+import com.google.accompanist.navigation.animation.AnimatedNavHost
 
 @Composable
 fun MainScreen(homeScreenStateViewModel: HomeScreenStateViewModel = viewModel()) {
@@ -62,7 +69,7 @@ fun MainScreen(homeScreenStateViewModel: HomeScreenStateViewModel = viewModel())
         }
 
         Box(modifier = Modifier.fillMaxWidth()) {
-            NavHost(
+            AnimatedNavHost(
                 navController = navController,
                 startDestination = BottomNavItem.Home.route,
                 modifier = Modifier.padding(innerPadding)
@@ -87,6 +94,21 @@ fun MainScreen(homeScreenStateViewModel: HomeScreenStateViewModel = viewModel())
             }
 
         }
+
+        val context = LocalContext.current
+        //Implementing Back Button Handler
+        BackHandler {
+            if (homeScreenStateViewModel.showProfileSideBar.value || homeScreenStateViewModel.showCartSideBar.value || homeScreenStateViewModel.showNotificationsBar.value) {
+                homeScreenStateViewModel.showProfileSideBar.value = false
+                homeScreenStateViewModel.showCartSideBar.value = false
+                homeScreenStateViewModel.showNotificationsBar.value = false
+            } else {
+                if (!navController.popBackStack()) {
+                    (context as Activity).finish() // Exit the app if back stack is empty
+                }
+            }
+        }
+
     }
     // Showing Profile Side bar
     AnimatedVisibility(
@@ -142,6 +164,7 @@ fun MainScreen(homeScreenStateViewModel: HomeScreenStateViewModel = viewModel())
             onClose = { homeScreenStateViewModel.showCartSideBar.value = false }
         )
     }
+
 
 }
 

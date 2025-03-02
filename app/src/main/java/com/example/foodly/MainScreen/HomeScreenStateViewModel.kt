@@ -18,7 +18,7 @@ class HomeScreenStateViewModel() : ViewModel() {
     val timeTextSlogan = _timeTextSlogan
 
     //Show Side bar States
-    private val _showProfileSideBar  = mutableStateOf(false)
+    private val _showProfileSideBar = mutableStateOf(false)
     val showProfileSideBar = _showProfileSideBar
 
     private val _showNotificationsBar = mutableStateOf(false)
@@ -40,11 +40,11 @@ class HomeScreenStateViewModel() : ViewModel() {
     private val _viewAllText = mutableStateOf("View All")
     val viewAllText = _viewAllText
 
-    private val _experienceNewDishText = mutableStateOf("Experience Our\n" +
-            "delicious new dish")
+    private val _experienceNewDishText = mutableStateOf(
+        "Experience Our\n" +
+                "delicious new dish"
+    )
     val experienceNewDishText = _experienceNewDishText
-
-
 
 
     private val _isCartEmpty = mutableStateOf(false)
@@ -64,6 +64,18 @@ class HomeScreenStateViewModel() : ViewModel() {
 
     private val _total = mutableIntStateOf(0)
     val total = _total
+
+    private val _myOrdersText = mutableStateOf("My Orders")
+    var myOrdersText = _myOrdersText
+
+    private val _activeButtonClicked = mutableStateOf(true)
+    var activeButtonClicked = _activeButtonClicked
+
+    private val _completedButtonClicked = mutableStateOf(false)
+    var completedButtonClicked = _completedButtonClicked
+
+    private val _cancelledButtonClicked = mutableStateOf(false)
+    var cancelledButtonClicked = _cancelledButtonClicked
 
 
     private val _menuItems = loadMenuItemsData().toMutableStateList()

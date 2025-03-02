@@ -42,15 +42,19 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.foodly.R
+import com.example.foodly.StatusBarColor
 import com.example.foodly.ui.theme.appThemeColor2
 
 //profile side bar
 @SuppressLint("AutoboxingStateValueProperty", "UseOfNonLambdaOffsetOverload")
 @Composable
 fun ProfileSideBar(onClose: () -> Unit = {}) {
+
+    StatusBarColor(color = Color(appThemeColor2.toArgb()), darkIcons = true)
 
     // Track the sidebar's horizontal offset
     var offsetX by remember { mutableFloatStateOf(0f) }
@@ -256,3 +260,10 @@ private fun loadProfileBarItemsData(): List<Item> {
 
 
 data class Item(val itemText: String, val itemIcon: Int)
+
+//@Preview(showSystemUi = true)
+//@Composable
+//private fun Preview(){
+//    ProfileSideBar()
+//}
+
