@@ -4,6 +4,9 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
+import com.example.foodly.HomeSideBars.loadCartData
+import com.example.foodly.HomeSideBars.loadNotificationData
+import com.example.foodly.HomeSideBars.loadProfileBarItemsData
 import com.example.foodly.R
 
 class HomeScreenStateViewModel() : ViewModel() {
@@ -84,5 +87,16 @@ class HomeScreenStateViewModel() : ViewModel() {
 
     private val _bestSellerItems = loadBestSellerData().toMutableStateList()
     val bestSellerItem = _bestSellerItems
+
+
+    private val _cartItemsData = loadCartData().toMutableStateList()
+    val cartItemsData = _cartItemsData
+
+
+    private val _notificationsData = loadNotificationData().toMutableStateList()
+    val notificationsData = _notificationsData
+
+    private val _profileSideBarData = loadProfileBarItemsData().toMutableStateList()
+    val profileSideBarData = _profileSideBarData
 
 }

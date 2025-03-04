@@ -1,8 +1,7 @@
 @file:Suppress("IMPLICIT_CAST_TO_ANY")
 
-package com.example.foodly.MainScreen.ProfileSideBarScreens
+package com.example.foodly.MainScreen.ProfileSideBarScreens.MyOrders.ProfileSideBarScreens
 
-import android.widget.ImageButton
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -245,8 +244,8 @@ fun MyOrdersScreen(homeScreenStateViewModel: HomeScreenStateViewModel = viewMode
 }
 
 
-@Preview(showSystemUi = true, name = "MyOrdersScreenPreview")
-@Composable
-private fun Preview() {
-    MyOrdersScreen()
-}
+//@Preview(showSystemUi = true, name = "MyOrdersScreenPreview")
+//@Composable
+//private fun Preview() {
+//    MyOrdersScreen()
+//}

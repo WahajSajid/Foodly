@@ -339,10 +339,12 @@ fun CartSideBar(
 
 //Lazy Column for the cart item
 @Composable
-fun CartLazyColumn(modifier: Modifier = Modifier) {
-    val carItems = rememberSaveable { loadCartData() }
+fun CartLazyColumn(
+    modifier: Modifier = Modifier,
+    homeScreenStateViewModel: HomeScreenStateViewModel = viewModel()
+) {
     LazyColumn(modifier = modifier) {
-        itemsIndexed(carItems) { index, item ->
+        itemsIndexed(homeScreenStateViewModel.cartItemsData) { index, item ->
             CartLazyItemComposable(
                 itemName = item.name,
                 itemPrice = item.price,
@@ -354,7 +356,7 @@ fun CartLazyColumn(modifier: Modifier = Modifier) {
                     //Increase the item by 1
                 },
                 onDecreaseItem = {
-                    if(item.quantity > 1) {
+                    if (item.quantity > 1) {
                         //Decrease the item by 1
                     }
                 }
@@ -482,7 +484,7 @@ fun CartLazyItemComposable(
 }
 
 //Function to load the data
-private fun loadCartData(
+fun loadCartData(
 ): List<CartItem> {
     val cartItems = mutableListOf<CartItem>()
 

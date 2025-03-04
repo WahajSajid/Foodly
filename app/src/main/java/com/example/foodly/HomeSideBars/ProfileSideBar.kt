@@ -45,6 +45,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.foodly.MainScreen.HomeScreenStateViewModel
 import com.example.foodly.R
 import com.example.foodly.StatusBarColor
 import com.example.foodly.ui.theme.appThemeColor2
@@ -193,11 +195,12 @@ fun ProfileNavBarItem(
 
 //Lazy Column for the profile nav bar
 @Composable
-fun ProfileNavBarLazyColumn(modifier: Modifier = Modifier) {
-    val navBarItems = rememberSaveable { loadProfileBarItemsData() }
-
+fun ProfileNavBarLazyColumn(
+    modifier: Modifier = Modifier,
+    homeScreenStateViewModel: HomeScreenStateViewModel = viewModel()
+) {
     LazyColumn(modifier = modifier) {
-        itemsIndexed(navBarItems) { index, item ->
+        itemsIndexed(homeScreenStateViewModel.profileSideBarData) { index, item ->
             ProfileNavBarItem(item.itemIcon, item.itemText, isLogoutItem = index == 7, onClick = {
                 when (index) {
                     0 -> {/* Navigate to My orders*/
@@ -229,7 +232,7 @@ fun ProfileNavBarLazyColumn(modifier: Modifier = Modifier) {
 
 
 //Function to load the data for Profile NavBar Items
-private fun loadProfileBarItemsData(): List<Item> {
+fun loadProfileBarItemsData(): List<Item> {
     val items = mutableListOf<Item>()
     //Data for the lazy column
     val itemsText = listOf(

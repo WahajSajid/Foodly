@@ -38,6 +38,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.foodly.MainScreen.HomeScreenStateViewModel
 import com.example.foodly.R
 import com.example.foodly.ui.theme.appThemeColor2
 import com.example.foodly.ui.theme.dimOrangeColor
@@ -118,7 +120,13 @@ fun NotificationsSideBar(onClose: () -> Unit = {}) {
                         dimOrangeColor.toArgb()
                     )
                 )
-                NotificationLazyColumn(modifier = Modifier.padding(top = 15.dp, start = 25.dp, end = 25.dp))
+                NotificationLazyColumn(
+                    modifier = Modifier.padding(
+                        top = 15.dp,
+                        start = 25.dp,
+                        end = 25.dp
+                    )
+                )
             }
         }
     }
@@ -126,11 +134,12 @@ fun NotificationsSideBar(onClose: () -> Unit = {}) {
 
 //Lazy Column for the Notifications
 @Composable
-fun NotificationLazyColumn(modifier: Modifier = Modifier) {
-    val notifications = rememberSaveable { loadNotificationData() }
-
+fun NotificationLazyColumn(
+    modifier: Modifier = Modifier,
+    homeScreenStateViewModel: HomeScreenStateViewModel = viewModel()
+) {
     LazyColumn(modifier = modifier) {
-        itemsIndexed(notifications) { index, item ->
+        itemsIndexed(homeScreenStateViewModel.notificationsData) { index, item ->
             NotificationItemComposable(
                 notificationText = item.notificationText,
                 notificationIcon = when (item.notificationType) {
@@ -138,7 +147,7 @@ fun NotificationLazyColumn(modifier: Modifier = Modifier) {
                     "order" -> R.drawable.order_notification_icon
                     "delivery" -> R.drawable.delivery_notification_icon
                     else -> R.drawable.promotion_notification_icon
-                }, onClick = { /* Navigate to the desired screen*/}
+                }, onClick = { /* Navigate to the desired screen*/ }
             )
         }
     }
@@ -186,7 +195,7 @@ fun NotificationItemComposable(
 
 
 //Function to load the notifications data
-private fun loadNotificationData(): List<Notification> {
+fun loadNotificationData(): List<Notification> {
     val notifications = mutableListOf<Notification>()
 
     //Dummy Data, Replace with the original data
