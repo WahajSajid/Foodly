@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.foodly.BottomNavigationBarColor
 import com.example.foodly.NetworkPermissions.HasInternetAccess
 import com.example.foodly.NetworkPermissions.InternetAccessCallBack
 import com.example.foodly.NetworkPermissions.NetworkUtil
@@ -78,6 +79,10 @@ fun RegisterScreen(
     if(stateViewModel.authenticationSuccessful.value){
         navController.popBackStack()
     }
+    //Setting the color of android bottom navigation bar
+    BottomNavigationBarColor(color = Color.White, darkIcons = true)
+
+
     StatusBarColor(color = Color(appThemeColor1.toArgb()), darkIcons = true)
     Scaffold(snackbarHost = {
         FoodlyTheme {

@@ -82,8 +82,6 @@ class MainActivity : ComponentActivity() {
                 sharedPreferences.getBoolean("gone_through_onBoardingScreen", false)
             context = LocalContext.current
             val snackBarHostState = remember { SnackbarHostState() }
-            val activity =
-                context as? Activity ?: throw IllegalStateException("Activity context is required")
 
             // Initialize FirebaseAuth and FirebaseDatabase
             authentication = FirebaseAuth.getInstance()
@@ -101,6 +99,9 @@ class MainActivity : ComponentActivity() {
             stateViewModel = ViewModelProvider(this)[StateViewModel::class.java]
             homeScreenStateViewModel = ViewModelProvider(this)[HomeScreenStateViewModel::class.java]
 
+
+
+            //Initialize the nav controller
             val navController = rememberNavController()
 
             // Handling navigation from the splash screen
@@ -120,11 +121,14 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
+
+            //Setting up the Animated NavHost for the navigation
             AnimatedNavHost(
                 navController = navController,
                 startDestination = "SplashScreen",
                 modifier = Modifier.fillMaxSize()
             ) {
+                //Splash Screen Composable
                 composable(
                     route = "SplashScreen",
                     popEnterTransition = {
@@ -143,6 +147,7 @@ class MainActivity : ComponentActivity() {
                     SplashScreen(navController = navController)
                 }
 
+                //Welcome Screen Composable
                 composable(
                     route = "WelcomeScreen",
                     popEnterTransition = {
@@ -183,6 +188,7 @@ class MainActivity : ComponentActivity() {
                     )
                 }
 
+                //OnBoardingScreen Composable
                 composable(
                     route = "OnBoardingScreen",
                     popEnterTransition = {
@@ -232,6 +238,7 @@ class MainActivity : ComponentActivity() {
                     )
                 }
 
+                //LogInScreen Composable
                 composable(
                     route = "LogInScreen",
                     popEnterTransition = {
@@ -287,6 +294,7 @@ class MainActivity : ComponentActivity() {
                     )
                 }
 
+                //Register Screen Composable
                 composable(
                     route = "RegisterScreen",
                     popEnterTransition = {
@@ -322,6 +330,8 @@ class MainActivity : ComponentActivity() {
                     )
                 }
 
+
+                //Main Screen Composable
                 composable(
                     route = "Main Screen",
                     popEnterTransition = {

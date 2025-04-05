@@ -46,6 +46,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.foodly.MainScreen.HomeScreenStateViewModel
 import com.example.foodly.R
 import com.example.foodly.StatusBarColor
@@ -54,7 +55,7 @@ import com.example.foodly.ui.theme.appThemeColor2
 //profile side bar
 @SuppressLint("AutoboxingStateValueProperty", "UseOfNonLambdaOffsetOverload")
 @Composable
-fun ProfileSideBar(onClose: () -> Unit = {}) {
+fun ProfileSideBar(onClose: () -> Unit = {}, navController: NavController, homeScreenStateViewModel: HomeScreenStateViewModel = viewModel(),  onNavigateToOrders:() -> Unit = {}) {
 
     StatusBarColor(color = Color(appThemeColor2.toArgb()), darkIcons = true)
 
@@ -146,7 +147,10 @@ fun ProfileSideBar(onClose: () -> Unit = {}) {
                         start = 20.dp,
                         end = 10.dp,
                         bottom = 10.dp
-                    )
+                    ),
+                    homeScreenStateViewModel,
+                    navController = navController,
+                    onNavigateToOrders = onNavigateToOrders
                 )
             }
         }
@@ -197,13 +201,17 @@ fun ProfileNavBarItem(
 @Composable
 fun ProfileNavBarLazyColumn(
     modifier: Modifier = Modifier,
-    homeScreenStateViewModel: HomeScreenStateViewModel = viewModel()
+    homeScreenStateViewModel: HomeScreenStateViewModel = viewModel(),
+    navController: NavController,
+    onNavigateToOrders:() -> Unit = {}
 ) {
     LazyColumn(modifier = modifier) {
         itemsIndexed(homeScreenStateViewModel.profileSideBarData) { index, item ->
             ProfileNavBarItem(item.itemIcon, item.itemText, isLogoutItem = index == 7, onClick = {
                 when (index) {
-                    0 -> {/* Navigate to My orders*/
+                    0 -> {
+                        //Navigate to orders
+                        onNavigateToOrders()
                     }
 
                     1 -> {/* Navigate to My Profile*/

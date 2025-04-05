@@ -14,10 +14,12 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -49,6 +51,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.foodly.R
 import com.example.foodly.StatusBarColor
 import com.example.foodly.ui.theme.appThemeColor1
@@ -63,8 +66,14 @@ fun HomeScreen(
     homeScreenStateViewModel: HomeScreenStateViewModel = viewModel(),
     profileIconClick: () -> Unit = {},
     notificationIconClick: () -> Unit = {},
-    cartIconClick: () -> Unit = {}
+    cartIconClick: () -> Unit = {},
+    navController: NavController,
+    showBottomNavBar: () -> Unit= {}
 ) {
+    //Show the bottom navigation bar
+    showBottomNavBar()
+
+
     val scrollState = rememberSaveable(saver = ScrollState.Saver) { ScrollState(0) }
     if (homeScreenStateViewModel.showProfileSideBar.value) {
         StatusBarColor(
@@ -377,7 +386,7 @@ fun HomeScreen(
                                     horizontalAlignment = Alignment.Start
                                 ) {
                                     Image(
-                                        painter = painterResource(rememberSaveable{ R.drawable.bottom_left_circle }),
+                                        painter = painterResource(rememberSaveable { R.drawable.bottom_left_circle }),
                                         contentDescription = null
                                     )
                                 }
@@ -475,7 +484,8 @@ fun HomeScreen(
                         ) {
                             Box {
                                 Image(
-                                    painter = painterResource(recommendedItemsImages[i]), contentDescription = null,
+                                    painter = painterResource(recommendedItemsImages[i]),
+                                    contentDescription = null,
                                     contentScale = ContentScale.Crop,
                                     modifier = Modifier.fillMaxSize()
                                 )
@@ -502,7 +512,9 @@ fun HomeScreen(
                                             horizontalArrangement = Arrangement.Center
                                         ) {
                                             Text(
-                                                text = ratings[i], color = Color.Black, fontSize = 12.sp
+                                                text = ratings[i],
+                                                color = Color.Black,
+                                                fontSize = 12.sp
                                             )
                                             Text("⭐", fontSize = 10.sp)
                                         }
@@ -594,10 +606,14 @@ fun MenuItemRow(
 
 //Lazy Column for the Best Seller items
 @Composable
-fun BestSellerItemsComposable(modifier: Modifier = Modifier, homeScreenStateViewModel: HomeScreenStateViewModel) {
+fun BestSellerItemsComposable(
+    modifier: Modifier = Modifier,
+    homeScreenStateViewModel: HomeScreenStateViewModel
+) {
     LazyRow(modifier = modifier) {
         itemsIndexed(homeScreenStateViewModel.bestSellerItem) { index, item ->
-            BestSellerItemComposable(itemImage = item.itemImage, price = item.itemPrice,
+            BestSellerItemComposable(
+                itemImage = item.itemImage, price = item.itemPrice,
                 onClick = {
                     //Navigate to order
                 })
@@ -743,8 +759,8 @@ data class BestSellerItem(var itemImage: Int, var itemPrice: Int)
 //}
 
 
-@Preview(showSystemUi = true, name = "HomeScreen")
-@Composable
-private fun Preview() {
-    HomeScreen()
-}
+//@Preview(showSystemUi = true, name = "HomeScreen")
+//@Composable
+//private fun Preview() {
+//    HomeScreen()
+//}

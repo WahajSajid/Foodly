@@ -43,6 +43,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.foodly.BottomNavigationBarColor
 import com.example.foodly.NetworkPermissions.HasInternetAccess
 import com.example.foodly.NetworkPermissions.InternetAccessCallBack
 import com.example.foodly.NetworkPermissions.NetworkUtil
@@ -58,7 +59,6 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import okhttp3.Authenticator
 
 @Composable
 fun LogInScreen(
@@ -75,6 +75,9 @@ fun LogInScreen(
     if (stateViewModel.authenticationSuccessful.value) {
         navController.popBackStack()
     }
+
+    //Setting the color of android bottom navigation bar
+    BottomNavigationBarColor(color = Color.White, darkIcons = true)
 
     StatusBarColor(color = Color(appThemeColor1.toArgb()), darkIcons = true)
     Box(
