@@ -1,6 +1,8 @@
 package com.example.foodly.MainScreen.ProfileSideBarScreens.MyOrders.ProfileSideBarScreens
 
 import android.annotation.SuppressLint
+import android.content.Context
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -30,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -53,10 +56,16 @@ import com.example.foodly.ui.theme.dimOrangeColor
 @Composable
 fun LeaveReviewScreen(
     homeScreenStateViewModel: HomeScreenStateViewModel = viewModel(),
-    navController: NavController,
+    context: Context = LocalContext.current,
+    navController: NavController = NavController(context),
+    hideBottomNavBar:() ->Unit = {},
     img: Painter = painterResource(R.drawable.image1),
     itemName: String = "Soft Cake",
+
 ) {
+
+    //Hide the bottom nav bar
+    hideBottomNavBar()
 
     //Scroll State
     val scrollState = rememberSaveable(saver = ScrollState.Saver) { ScrollState(0) }
@@ -75,10 +84,19 @@ fun LeaveReviewScreen(
                 .fillMaxWidth()
                 .height(180.dp)
         ) {
-            Row(modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
+            Row(modifier = Modifier
+                .padding(bottom = 20.dp)
+                .fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
                 //Navigate back button
                 IconButton(
                     onClick = {
+
+                        //reset the stars
+                        resetStars(homeScreenStateViewModel)
+
+                        //reset the review text
+                        homeScreenStateViewModel.reviewInputText.value = ""
+
                         //Navigate back
                         navController.popBackStack()
                     },
@@ -111,7 +129,7 @@ fun LeaveReviewScreen(
         //Elevated card which contains the main content of the screen
         ElevatedCard(
             modifier = Modifier
-                .padding(top = 150.dp)
+                .padding(top = 120.dp)
                 .fillMaxSize(),
             shape = RoundedCornerShape(topStart = 35.dp, topEnd = 35.dp)
         ) {
@@ -260,7 +278,7 @@ fun LeaveReviewScreen(
                 //custom submit and cancel buttons
                 Row(
                     modifier = Modifier
-                        .padding(top = 30.dp)
+                        .padding(top = 30.dp, bottom = 20.dp)
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
@@ -280,8 +298,9 @@ fun LeaveReviewScreen(
                             },
                             modifier = Modifier
                                 .width(153.dp)
-                                .height(36.dp)
+                                .height(44.dp)
                                 .padding(5.dp),
+                            shape = RoundedCornerShape(25.dp),
                             colors = when (i) {
                                 0 -> {
                                     //Colors for the cancel button
@@ -310,11 +329,12 @@ fun LeaveReviewScreen(
                         ) {
                             //Row to place the text in the center
                             Row(
-                                modifier = Modifier.fillMaxSize(),
+                                modifier = Modifier
+                                    .fillMaxSize(),
                                 horizontalArrangement = Arrangement.Center,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                //Cancel Button text
+                                //Buttons text
                                 Text(
                                     text = when (i) {
                                         //Text for the cancel button
@@ -332,6 +352,17 @@ fun LeaveReviewScreen(
         }
 
 
+    }
+    //handle back navigation and some logic to on navigating back
+    BackHandler {
+        //reset the stars
+        resetStars(homeScreenStateViewModel)
+
+        //reset the review text
+        homeScreenStateViewModel.reviewInputText.value = ""
+
+        //navigate back
+        navController.popBackStack()
     }
 }
 
@@ -363,9 +394,19 @@ private fun toggleReviewStars(
     }
 }
 
+//reset stars
+private fun resetStars(stateModel:HomeScreenStateViewModel){
+    stateModel.star1.value = false
+    stateModel.star2.value = false
+    stateModel.star3.value = false
+    stateModel.star4.value = false
+    stateModel.star5.value = false
+    
+}
 
-//@Preview(name = "Review Screen")
-//@Composable
-//private fun Preview() {
-//    LeaveReviewScreen()
-//}
+
+@Preview(name = "Review Screen")
+@Composable
+private fun Preview() {
+    LeaveReviewScreen()
+}

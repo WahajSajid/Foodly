@@ -198,7 +198,10 @@ fun MainScreen(homeScreenStateViewModel: HomeScreenStateViewModel = viewModel())
                 ) {
                     LeaveReviewScreen(
                         homeScreenStateViewModel = homeScreenStateViewModel,
-                        navController = navController
+                        navController = navController,
+                        hideBottomNavBar = {
+                            homeScreenStateViewModel.showBottomNavigationComposable.value = false
+                        }
                     )
                 }
 

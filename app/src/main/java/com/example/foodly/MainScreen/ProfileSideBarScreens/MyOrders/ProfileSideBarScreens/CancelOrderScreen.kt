@@ -1,6 +1,8 @@
 package com.example.foodly.MainScreen.ProfileSideBarScreens.MyOrders.ProfileSideBarScreens
 
+import android.content.Context
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.annotation.ColorRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
@@ -58,7 +60,8 @@ import com.example.foodly.ui.theme.dimOrangeColor
 @Composable
 fun CancelOrderScreen(
     homeScreenStateViewModel: HomeScreenStateViewModel = viewModel(),
-    navController: NavController,
+    context: Context = LocalContext.current,
+    navController: NavController = NavController(context),
     hideBottomNavBar:() -> Unit ={}
 ) {
 
@@ -82,10 +85,16 @@ fun CancelOrderScreen(
                 .fillMaxWidth()
                 .height(180.dp)
         ) {
-            Row(modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
+            Row(modifier = Modifier
+                .padding(bottom = 20.dp)
+                .fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
                 //Navigate back button
                 IconButton(
                     onClick = {
+
+                        //reset the input field text
+                        homeScreenStateViewModel.otherReasonFieldText.value = ""
+
                         //Navigate back
                         navController.popBackStack()
                     },
@@ -119,7 +128,7 @@ fun CancelOrderScreen(
         //Elevated Card for the content
         ElevatedCard(
             modifier = Modifier
-                .padding(top = 150.dp)
+                .padding(top = 120.dp)
                 .fillMaxSize(),
             shape = RoundedCornerShape(topStart = 35.dp, topEnd = 35.dp)
         )
@@ -127,7 +136,7 @@ fun CancelOrderScreen(
             Column(
                 modifier = Modifier
                     .verticalScroll(scrollState)
-                    .padding(35.dp)
+                    .padding(start = 35.dp, end = 35.dp, top = 35.dp, bottom = 45.dp)
             ) {
                 //Heading text for the cancel order
                 Text(text = homeScreenStateViewModel.cancelOrderHeadingText.value)
@@ -296,6 +305,7 @@ fun CancelOrderScreen(
                             navController.navigate("Order Cancelled")
                         },
                         modifier = Modifier
+                            .padding(bottom = 50.dp)
                             .width(142.dp)
                             .height(36.dp),
                         colors = ButtonColors(
@@ -314,8 +324,11 @@ fun CancelOrderScreen(
         }
 
     }
-
-
+    //handling back button click action
+    BackHandler{
+        homeScreenStateViewModel.otherReasonFieldText.value = ""
+        navController.popBackStack()
+    }
 }
 
 
@@ -338,8 +351,8 @@ private fun toggleRadioButton(position: Int, homeScreenStateViewModel: HomeScree
 }
 
 
-//@Preview(showSystemUi = true, name = "Cancel Order Screen")
-//@Composable
-//private fun Preview() {
-//    CancelOrderScreen()
-//}
+@Preview(showSystemUi = true, name = "Cancel Order Screen")
+@Composable
+private fun Preview() {
+    CancelOrderScreen()
+}

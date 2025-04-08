@@ -2,6 +2,7 @@
 
 package com.example.foodly.MainScreen.ProfileSideBarScreens.MyOrders.ProfileSideBarScreens
 
+import android.content.Context
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.IconButton
@@ -26,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -44,7 +47,8 @@ import com.example.foodly.ui.theme.dimOrangeColor
 @Composable
 fun MyOrdersScreen(
     homeScreenStateViewModel: HomeScreenStateViewModel = viewModel(),
-    navController: NavController,
+    context: Context = LocalContext.current,
+    navController: NavController = NavController(context),
     showBottomNavBar:() -> Unit = {}
 ) {
     StatusBarColor(color = Color(appThemeColor1.toArgb()), darkIcons = true)
@@ -108,7 +112,7 @@ fun MyOrdersScreen(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     for (i in 0 until 3) {
-                        ElevatedButton(
+                        ElevatedCard(
                             onClick = {
                                 when (i) {
                                     0 -> {
@@ -139,10 +143,11 @@ fun MyOrdersScreen(
                                 }
                             },
                             modifier = Modifier
-                                .height(41.dp)
-                                .width(125.dp)
+                                .height(38.dp)
+                                .width(104.dp)
                                 .padding(5.dp),
-                            colors = ButtonColors(
+                            shape = RoundedCornerShape(25.dp),
+                            colors = CardColors(
                                 containerColor = when (i) {
                                     0 -> {
                                         if (homeScreenStateViewModel.activeButtonClicked.value) {
@@ -234,26 +239,29 @@ fun MyOrdersScreen(
                                 }
                             )
                         ) {
-                            Text(
-                                text = buttonTexts[i],
-                                fontSize = 12.sp,
-                                color = when (i) {
-                                    0 -> {
-                                        if (homeScreenStateViewModel.activeButtonClicked.value) Color.White
-                                        else Color(appThemeColor2.toArgb())
-                                    }
+                            //Row to place the texts in the center of the card
+                            Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically){
+                                Text(
+                                    text = buttonTexts[i],
+                                    fontSize = 12.sp,
+                                    color = when (i) {
+                                        0 -> {
+                                            if (homeScreenStateViewModel.activeButtonClicked.value) Color.White
+                                            else Color(appThemeColor2.toArgb())
+                                        }
 
-                                    1 -> {
-                                        if (homeScreenStateViewModel.completedButtonClicked.value) Color.White
-                                        else Color(appThemeColor2.toArgb())
-                                    }
+                                        1 -> {
+                                            if (homeScreenStateViewModel.completedButtonClicked.value) Color.White
+                                            else Color(appThemeColor2.toArgb())
+                                        }
 
-                                    else -> {
-                                        if (homeScreenStateViewModel.cancelledButtonClicked.value) Color.White
-                                        else Color(appThemeColor2.toArgb())
+                                        else -> {
+                                            if (homeScreenStateViewModel.cancelledButtonClicked.value) Color.White
+                                            else Color(appThemeColor2.toArgb())
+                                        }
                                     }
-                                }
-                            )
+                                )
+                            }
                         }
                     }
                 }
@@ -278,8 +286,8 @@ fun MyOrdersScreen(
 }
 
 
-//@Preview(showSystemUi = true, name = "MyOrdersScreenPreview")
-//@Composable
-//private fun Preview() {
-//    MyOrdersScreen()
-//}
+@Preview(showSystemUi = true, name = "MyOrdersScreenPreview")
+@Composable
+private fun Preview() {
+    MyOrdersScreen()
+}

@@ -37,7 +37,7 @@ import com.example.foodly.ui.theme.appThemeColor2
 import com.example.foodly.ui.theme.dimOrangeColor
 
 @Composable
-fun ActiveOrdersComposable(homeScreenStateViewModel: HomeScreenStateViewModel = viewModel(), navController: NavController, hideBottomNavBar:() -> Unit ={}) {
+fun ActiveOrdersComposable(homeScreenStateViewModel: HomeScreenStateViewModel = viewModel(), navController: NavController) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
