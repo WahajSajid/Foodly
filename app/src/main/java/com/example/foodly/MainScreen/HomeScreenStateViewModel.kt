@@ -3,12 +3,15 @@ package com.example.foodly.MainScreen
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.toMutableStateList
+import androidx.compose.ui.focus.FocusRequester
 import androidx.lifecycle.ViewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.foodly.HomeSideBars.loadCartData
 import com.example.foodly.HomeSideBars.loadNotificationData
 import com.example.foodly.HomeSideBars.loadProfileBarItemsData
+import com.example.foodly.MainScreen.ProfileSideBarScreens.MyOrders.ProfileSideBarScreens.AddressDetail
 import com.example.foodly.MainScreen.ProfileSideBarScreens.MyOrders.ProfileSideBarScreens.loadActiveOrderData
+import com.example.foodly.MainScreen.ProfileSideBarScreens.MyOrders.ProfileSideBarScreens.loadAddressData
 import com.example.foodly.MainScreen.ProfileSideBarScreens.MyOrders.ProfileSideBarScreens.loadCancelledOrdersData
 import com.example.foodly.MainScreen.ProfileSideBarScreens.MyOrders.ProfileSideBarScreens.loadCompletedOrdersData
 import com.example.foodly.R
@@ -118,6 +121,9 @@ class HomeScreenStateViewModel() : ViewModel() {
     private val _cancelledOrdersData = loadCancelledOrdersData().toMutableStateList()
     val cancelledOrderData = _cancelledOrdersData
 
+    private val _addressData = loadAddressData().toMutableStateList()
+    var addressData = _addressData
+
     private val _cancelOrderText = mutableStateOf("Cancel Order")
     var cancelOrderText = _cancelOrderText
 
@@ -171,7 +177,7 @@ class HomeScreenStateViewModel() : ViewModel() {
     var leaveReviewButtonText = _leaveReviewButtonText
 
     private val _orderedDeliveredText = mutableStateOf("Order delivered")
-    var orderedDeliveredText =_orderedDeliveredText
+    var orderedDeliveredText = _orderedDeliveredText
 
     private val _orderAgainText = mutableStateOf("Order Again")
     var orderAgainText = _orderAgainText
@@ -210,7 +216,7 @@ class HomeScreenStateViewModel() : ViewModel() {
     var writeReviewHint = _writeReviewHint
 
     private val _cancelButtonText = mutableStateOf("Cancel")
-    var cancelButtonText =_cancelButtonText
+    var cancelButtonText = _cancelButtonText
 
     private val _orderCancelledText = mutableStateOf("Order cancelled")
     var orderCancelledText = _orderCancelledText
@@ -218,9 +224,47 @@ class HomeScreenStateViewModel() : ViewModel() {
     private val _showBottomNavigationComposable = mutableStateOf(true)
     var showBottomNavigationComposable = _showBottomNavigationComposable
 
+    private val _myProfileText = mutableStateOf("My Profile")
+    var myProfileText = _myProfileText
 
-    private val _navigatedBack = mutableStateOf(false)
-    var navigatedBack = _navigatedBack
+    private val _fullName = mutableStateOf("")
+    var fullName = _fullName
+
+    private val _email = mutableStateOf("")
+    var email = _email
+
+    private val _phoneNumber = mutableStateOf("")
+    var phoneNumber = _phoneNumber
+
+    private val _updateProfileButtonText = mutableStateOf("Update Profile")
+    var updateProfileButtonText = _updateProfileButtonText
 
 
+    private val _deliveryAddressText = mutableStateOf("Deliver Address")
+    var deliveryAddressText = _deliveryAddressText
+
+
+    private val _selectedAddress: AddressDetail = AddressDetail("","", mutableStateOf(false))
+    var selectedAddress = _selectedAddress
+
+
+    private val _addAddressButtonText = mutableStateOf("Add New Address")
+    var addAddressButtonText  =_addAddressButtonText
+
+    private val _addressName = mutableStateOf("")
+    var addressName = _addressName
+
+    private val _address = mutableStateOf("")
+    var address = _address
+
+    private val _applyButtonText = mutableStateOf("Apply")
+    var applyButtonText = _applyButtonText
+
+    private val _addNewAddressText = mutableStateOf("Add New Address")
+    var addNewAddressText = _addNewAddressText
+
+    //focus requester
+    val focusRequester1 = FocusRequester()
+    val focusRequester2 = FocusRequester()
+    val focusRequester3 = FocusRequester()
 }

@@ -55,7 +55,13 @@ import com.example.foodly.ui.theme.appThemeColor2
 //profile side bar
 @SuppressLint("AutoboxingStateValueProperty", "UseOfNonLambdaOffsetOverload")
 @Composable
-fun ProfileSideBar(onClose: () -> Unit = {}, navController: NavController, homeScreenStateViewModel: HomeScreenStateViewModel = viewModel(),  onNavigateToOrders:() -> Unit = {}) {
+fun ProfileSideBar(
+    onClose: () -> Unit = {},
+    homeScreenStateViewModel: HomeScreenStateViewModel = viewModel(),
+    onNavigateToOrders: () -> Unit = {},
+    navigateToProfile: () -> Unit = {},
+    navigateToAddressScreen: () -> Unit = {}
+) {
 
     StatusBarColor(color = Color(appThemeColor2.toArgb()), darkIcons = true)
 
@@ -149,8 +155,9 @@ fun ProfileSideBar(onClose: () -> Unit = {}, navController: NavController, homeS
                         bottom = 10.dp
                     ),
                     homeScreenStateViewModel,
-                    navController = navController,
-                    onNavigateToOrders = onNavigateToOrders
+                    onNavigateToOrders,
+                    navigateToProfile,
+                    navigateToAddressScreen
                 )
             }
         }
@@ -177,8 +184,9 @@ fun ProfileNavBarItem(
             .fillMaxWidth()
             .wrapContentSize()
     ) {
-        Row(modifier = Modifier
-            .clickable { onClick() }) {
+        Row(
+            modifier = Modifier
+                .clickable { onClick() }) {
             Image(painter = painterResource(icon), contentDescription = null)
             Text(
                 text = itemText,
@@ -202,8 +210,9 @@ fun ProfileNavBarItem(
 fun ProfileNavBarLazyColumn(
     modifier: Modifier = Modifier,
     homeScreenStateViewModel: HomeScreenStateViewModel = viewModel(),
-    navController: NavController,
-    onNavigateToOrders:() -> Unit = {}
+    onNavigateToOrders: () -> Unit,
+    navigateToProfile: () -> Unit,
+    navigateToAddressScreen: () -> Unit
 ) {
     LazyColumn(modifier = modifier) {
         itemsIndexed(homeScreenStateViewModel.profileSideBarData) { index, item ->
@@ -214,10 +223,14 @@ fun ProfileNavBarLazyColumn(
                         onNavigateToOrders()
                     }
 
-                    1 -> {/* Navigate to My Profile*/
+                    1 -> {
+                        /* Navigate to My Profile*/
+                        navigateToProfile()
                     }
 
-                    2 -> {/* Navigate to Delivery Address*/
+                    2 -> {
+                        /* Navigate to Delivery Address*/
+                        navigateToAddressScreen()
                     }
 
                     3 -> {/* Navigate to Payment Methods*/

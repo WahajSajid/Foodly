@@ -51,6 +51,7 @@ fun MyOrdersScreen(
     navController: NavController = NavController(context),
     showBottomNavBar:() -> Unit = {}
 ) {
+    //Set the status bar color
     StatusBarColor(color = Color(appThemeColor1.toArgb()), darkIcons = true)
 
     //Show the bottom navigation bar

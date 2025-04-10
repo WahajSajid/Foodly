@@ -55,10 +55,13 @@ import com.example.foodly.BottomNavigationBarColor
 import com.example.foodly.HomeSideBars.CartSideBar
 import com.example.foodly.HomeSideBars.NotificationsSideBar
 import com.example.foodly.HomeSideBars.ProfileSideBar
+import com.example.foodly.MainScreen.ProfileSideBarScreens.MyOrders.ProfileSideBarScreens.AddNewAddressScreen
 import com.example.foodly.MainScreen.ProfileSideBarScreens.MyOrders.ProfileSideBarScreens.CancelOrderScreen
+import com.example.foodly.MainScreen.ProfileSideBarScreens.MyOrders.ProfileSideBarScreens.EditProfileScreen
 import com.example.foodly.MainScreen.ProfileSideBarScreens.MyOrders.ProfileSideBarScreens.LeaveReviewScreen
 import com.example.foodly.MainScreen.ProfileSideBarScreens.MyOrders.ProfileSideBarScreens.MyOrdersScreen
 import com.example.foodly.MainScreen.ProfileSideBarScreens.MyOrders.ProfileSideBarScreens.OrderCancelConfirmationScreen
+import com.example.foodly.MainScreen.ProfileSideBarScreens.MyOrders.ProfileSideBarScreens.SelectAddressScreen
 import com.example.foodly.StatusBarColor
 import com.example.foodly.ui.theme.appThemeColor1
 import com.example.foodly.ui.theme.appThemeColor2
@@ -206,6 +209,84 @@ fun MainScreen(homeScreenStateViewModel: HomeScreenStateViewModel = viewModel())
                 }
 
 
+                //Update Profile Screen
+                composable(
+                    route = "Update Profile",
+                    popEnterTransition = {
+                        slideIntoContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Right,
+                            tween(1000)
+                        )
+                    },
+                    exitTransition = {
+                        slideOutOfContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Left,
+                            tween(1000)
+                        )
+                    }
+                ) {
+                    EditProfileScreen(
+                        hideBottomNavBar = {
+                            homeScreenStateViewModel.showBottomNavigationComposable.value = false
+                        },
+                        navigateBack = {
+                            navController.popBackStack()
+                        })
+                }
+
+                //Select Address Screen
+                composable(
+                    route = "Select Address Screen",
+                    popEnterTransition = {
+                        slideIntoContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Right,
+                            tween(1000)
+                        )
+                    },
+                    exitTransition = {
+                        slideOutOfContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Left,
+                            tween(1000)
+                        )
+                    }
+                ) {
+                    SelectAddressScreen(
+                        hideBottomNavBar = {
+                            homeScreenStateViewModel.showBottomNavigationComposable.value = false
+                        },
+                        navigateBack = {
+                            navController.popBackStack()
+                        },
+                        navigateToNewAddressScreen = {
+                            navController.navigate("Add New Address Screen")
+                        })
+                }
+
+                //Add New Address Screen
+                composable(
+                    route = "Add New Address Screen",
+                    popEnterTransition = {
+                        slideIntoContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Right,
+                            tween(1000)
+                        )
+                    },
+                    exitTransition = {
+                        slideOutOfContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Left,
+                            tween(1000)
+                        )
+                    }
+                ) {
+                    AddNewAddressScreen(
+                        hideBottomNavBar = {
+                            homeScreenStateViewModel.showBottomNavigationComposable.value = false
+                        },
+                        navigateBack = {
+                            navController.popBackStack()
+                        })
+                }
+
             }
 
         }
@@ -247,12 +328,23 @@ fun MainScreen(homeScreenStateViewModel: HomeScreenStateViewModel = viewModel())
                 //Hide the profile side bar
                 homeScreenStateViewModel.showProfileSideBar.value = false
             },
-            navController,
             onNavigateToOrders = {
                 //Hide the profile side bar
                 homeScreenStateViewModel.showProfileSideBar.value = false
-
+                //Navigate to my orders screen
                 navController.navigate("my_orders")
+            },
+            navigateToProfile = {
+                //Hide the profile side bar
+                homeScreenStateViewModel.showProfileSideBar.value = false
+                //Navigate to Update profile screen
+                navController.navigate("Update Profile")
+            },
+            navigateToAddressScreen = {
+                //Hide the profile side bar
+                homeScreenStateViewModel.showProfileSideBar.value = false
+                //Navigate to Update profile screen
+                navController.navigate("Select Address Screen")
             }
         )
     }

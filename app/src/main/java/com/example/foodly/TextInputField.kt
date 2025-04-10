@@ -22,7 +22,8 @@ fun TextInputField(
     keyboardActions: KeyboardActions = KeyboardActions(),
     onValueChange: (String) -> Unit = {},
     value: String ="",
-    isError: Boolean = false
+    isError: Boolean = false,
+    singleLine:Boolean = false,
 
     ) {
     TextField(
@@ -42,7 +43,8 @@ fun TextInputField(
         placeholder = { Text(text = placeHolder) },
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
-        isError = isError
+        isError = isError,
+        singleLine = singleLine
     )
 }
 
